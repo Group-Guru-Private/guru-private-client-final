@@ -1,10 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native'
 import CheckBox from '@react-native-community/checkbox'
+import axios from 'axios'
+
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -15,9 +17,41 @@ export default function LoginPage() {
 
     function handleLogin() {
         if(isSelected){
-            navigate.replace('BottomNavTeacher')
+                axios({
+                    url: 'http://192.168.0.100:3000/teachers/login',
+                    method: 'POST',
+                    data: {
+                        email: email,
+                        password: password
+                    }
+                })
+                .then(({data}) => {
+                    console.log(data)
+                    navigate.replace('BottomNavTeacher')
+                })
+                .catch(err => {
+                    console.log(err);
+                    Alert.alert('Invalid Email or Password')
+                })
+            
         } else {
-            navigate.replace('BottomNav')
+            
+            axios({
+                url: 'http://192.168.0.100:3000/students/login',
+                method: 'POST',
+                data: {
+                    email: email,
+                    password: password
+                }
+            })
+            .then(({data}) => {
+                console.log(data)
+                navigate.replace('BottomNav')
+            })
+            .catch(err => {
+                console.log(err);
+                Alert.alert('Invalid Email or Password')
+            })
         }
     }
 
