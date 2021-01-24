@@ -28,15 +28,32 @@ import {
   Row
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
+import axios from 'axios'
 
 export default function ListTeachersPage() {
   // const [image, setImage] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const navigate = useNavigation();
+  const [loading, setLoading] = useState(false)
 
-  fetch("https://jsonplaceholder.typicode.com/users")
-    .then((res) => res.json())
-    .then((data) => setTeachers(data));
+  useEffect(() => {
+    setLoading(true)
+    axios({
+      url: 'http://192.168.0.100:3000/teachers',
+      method: 'GET'
+    })
+    .then(({data}) => {
+      setTeachers(data)
+      setLoading(false)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }, [])
+
+  // fetch("https://jsonplaceholder.typicode.com/users")
+  //   .then((res) => res.json())
+  //   .then((data) => setTeachers(data));
 
   //     useEffect(() => {
   //         (async () => {
@@ -65,40 +82,44 @@ export default function ListTeachersPage() {
     navigate.push('Order', { teacher })
   };
 
-  return (
-    // <SafeAreaView style={styles.container}>
-    <>
-      <View style={styles.top}>
-      </View>
-      <Title style={styles.title}>List teacher</Title>
-      <Right><Text style={styles.title}></Text></Right>
-      <ScrollView>
-        {teachers.map((teacher) => (
-          <TouchableOpacity
-            onPress={() => {
-              goDetail({id: teacher.id, name: teacher.name, email: teacher.email});
-            }}
-            key={teacher.id}
-            style={styles.card}
-          >
-            <Card style={{ borderRadius: 20 }}>
-              <CardItem style={styles.borderTop}>
-                <Left>
-                  <Thumbnail />
-                  <Body>
-                    <Text>{teacher.name}</Text>
-                    <Text note>{teacher.email}</Text>
-                    <Text note>Rp: 100.000</Text>
-                  </Body>
-                </Left>
-              </CardItem>
-            </Card>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      </>
-    // </SafeAreaView>
-  );
+  if(loading) return <Text>Loading...</Text>
+
+  else {
+    return (
+      // <SafeAreaView style={styles.container}>
+      <>
+        <View style={styles.top}>
+        </View>
+        <Title style={styles.title}>List teacher</Title>
+        <ScrollView>
+          {teachers.map((teacher) => (
+            <TouchableOpacity
+              onPress={() => {
+                goDetail(teacher);
+              }}
+              key={teacher.id}
+              style={styles.card}
+            >
+              <Card style={{ borderRadius: 20 }}>
+                <CardItem style={styles.borderTop}>
+                  <Left>
+                    <Thumbnail />
+                    <Body>
+                      <Text>{teacher.name}</Text>
+                      <Text note>{teacher.email}</Text>
+                      <Text note>Rp: 100.000</Text>
+                    </Body>
+                  </Left>
+                </CardItem>
+              </Card>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        </>
+      // </SafeAreaView>
+    );
+
+  }
 }
 
 const styles = StyleSheet.create({

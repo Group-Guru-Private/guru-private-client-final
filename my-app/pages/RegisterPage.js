@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Touchable, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Touchable, Alert, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker'
 import { LinearGradient } from 'expo-linear-gradient';
 import MapView , {PROVIDER_GOOGLE} from 'react-native-maps'
 import {ActivityIndicator} from 'react-native'
 import axios from '../config/axiosInstance'
 import {useNavigation} from '@react-navigation/native'
+import SelectMultiple from 'react-native-select-multiple'
 
 export default function RegisterPage() {
     const subjects = ['Mathematics', 'English', 'Chemisty', 'Physics', 'Biology', 'Bahasa Indonesia', 'History', 'Geography', 'Sociology', 'Economics']
@@ -27,6 +28,8 @@ export default function RegisterPage() {
       background: '',
       selectedSubject: ''
     })
+    const [selectedSubject, setSelectedSubject] = useState([])
+    
     const [position, setPosition] = useState(initPosition)
     
     useEffect(() => {
@@ -43,6 +46,16 @@ export default function RegisterPage() {
       { timeout: 5000, maximumAge: 1000 })
     }, [])
 
+    function onSelectionsChange (subject){
+      setSelectedSubject(subject)
+      const newSubject = subject.map(sub => {return sub.value})
+      
+      setInputData({
+        ...inputData,
+        'selectedSubject': newSubject
+      })
+    }
+
     function handleInputChange(text, inputName){
       const name = inputName
       let value = text
@@ -54,6 +67,7 @@ export default function RegisterPage() {
     }
 
     const register = () => {
+      
       if (inputData.role === 'student') {
         const payload = {
           name: inputData.name,
@@ -72,6 +86,7 @@ export default function RegisterPage() {
             if (err) alert(err.response.data.message.split(',').map(msg => msg))
           })
       }else {
+        console.log('masuk')
         const payload = {
           name: inputData.name,
           email: inputData.email,
@@ -155,18 +170,15 @@ export default function RegisterPage() {
                     placeholderTextColor='white'
                     value={inputData.background}
                   />
-                  <Picker
-                      selectedValue={inputData.selectedSubject}
-                      style={styles.input}
-                      onValueChange={(itemValue, itemIndex) => {handleInputChange(itemValue, 'selectedSubject')}}
-                  >
-                      {
-                          subjects.map((subject, index) => {
-                              return <Picker.Item key={index} label={subject} value={subject} />
-                          })
-                      }
-                  </Picker>
-                  <TouchableHighlight style={styles.button} onPress={register}>
+                  <ScrollView>
+                    <SelectMultiple
+                      style={{height: 100, width: 195}}
+                      items={subjects}
+                      selectedItems={selectedSubject}
+                      onSelectionsChange={e => {onSelectionsChange(e)}} />
+                  </ScrollView>
+
+                  <TouchableHighlight style={[styles.button, styles.test]} onPress={register}>
                     <Text>Register</Text>
                   </TouchableHighlight>
               </View>
@@ -264,5 +276,8 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderRadius: 30,
         width: '50%'
+    },
+    test: {
+      top: -70
     }
 });
