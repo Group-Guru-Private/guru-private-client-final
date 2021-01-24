@@ -107,7 +107,7 @@ export default function ProfilePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -420,
+    marginTop: -480,
     justifyContent: "space-between",
     // flexDirection: "row",
     marginLeft: "5%",
