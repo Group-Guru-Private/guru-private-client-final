@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.13.3",
     "@react-native-community/checkbox": "^0.5.7",
     "@react-native-community/datetimepicker": "3.0.4",
     "@react-native-community/masked-view": "0.1.10",
@@ -36,7 +37,8 @@
     "react-native-select-multiple": "^2.1.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-vector-icons": "^8.0.0",
-    "react-native-web": "~0.13.12"
+    "react-native-web": "~0.13.12",
+    "react-number-format": "^4.4.4"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

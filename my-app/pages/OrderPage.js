@@ -1,18 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Image, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker'
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from 'axios'
 
 export default function OrderPage({navigation, route}) {
-    const [subject, setSubject] = useState('')
+    const { teacher } = route.params
+    const [subject, setSubject] = useState(teacher.subjects[0])
     const listSubjects = ['Biology', 'Mathematics', 'English', 'Programming']
 
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-    const { teacher } = route.params
 
     const dataTeacher = {
         id: '123',
@@ -43,6 +45,34 @@ export default function OrderPage({navigation, route}) {
         showMode('date');
       };
 
+      const submitOrder = async () => {
+        try {
+          const value = await AsyncStorage.getItem('access_token')
+          if(value !== null) {
+            axios({
+              url: `http://192.168.0.100:3000/orders/${teacher.id}`,
+              method: 'POST',
+              data: {
+                subject: subject,
+                date: date,
+                distance: 20
+              },
+              headers: {
+                access_token: value
+              }
+            })
+            .then(({data}) => {
+              Alert.alert(JSON.stringify(data))
+            })
+            .catch(err => {
+              console.log(err);
+            })
+          }
+        } catch(e) {
+          // error reading value
+          console.log(e);
+        }
+      }
 
     return (
         <LinearGradient
@@ -50,7 +80,6 @@ export default function OrderPage({navigation, route}) {
               colors={['#008bb5','#48bcae']}
               style={{height: '100%'}}
           >
-          <Text>{JSON.stringify(teacher)}</Text>
           <View style={styles.container}>
               <View style={{flexDirection: 'row'}}>
                 <Image source={{ uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}} style={styles.profileImg} />
@@ -64,8 +93,8 @@ export default function OrderPage({navigation, route}) {
                 </View>
               </View>
               <View>
-                <Text>{dataTeacher.background}</Text>
-                <Text>{dataTeacher.phone}</Text>
+                <Text>{teacher.background}</Text>
+                <Text>{teacher.telpon_number}</Text>
               </View>
           </View>
           <View
@@ -77,7 +106,7 @@ export default function OrderPage({navigation, route}) {
                 onValueChange={(itemValue, itemIndex) => setSubject(itemValue)}
               >
               {
-                listSubjects.map((mapel, index) => {
+                teacher.subjects.map((mapel, index) => {
                     return <Picker.Item key={index} label={mapel} value={mapel} />
                 })
               }
@@ -95,7 +124,7 @@ export default function OrderPage({navigation, route}) {
                     onChange={onChange}
                 />
                 )}
-              <TouchableHighlight style={styles.button} onPress={e => {console.log({teacherId: teacher.id})}}>
+              <TouchableHighlight style={styles.button} onPress={e => {submitOrder()}}>
                 <Text>Order</Text>
               </TouchableHighlight>
           </View>

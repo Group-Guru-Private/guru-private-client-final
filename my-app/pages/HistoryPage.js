@@ -26,7 +26,6 @@ import {
   Button,
   Title
 } from "native-base";
-import BottomNav from "../components/BottomNav";
 import { useNavigation } from "@react-navigation/native";
 
 export default function HomePage() {
