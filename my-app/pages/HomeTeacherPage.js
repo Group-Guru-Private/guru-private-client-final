@@ -82,12 +82,34 @@ const photo = [
 
 export default function HomeTeacherPage() {
   const [isEnabled, setIsEnabled] = useState();
-  
+  const [orders, setOrders] = useState([]);
+
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
 
     getDataById()
+
+    axios(({
+      url: 'http://192.168.0.100:3000/orders',
+      method: 'GET'
+    }))
+      .then(async ({data}) => {
+        try {
+          const asyncId = await AsyncStorage.getItem('id')
+          const filteredData = data.filter(el => {
+            return el.TeacherId == asyncId
+          })
+          console.log(filteredData)
+          setOrders(filteredData)
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        Alert.alert(err)
+      })
 
     return function cleanUp() {
       abortController.abort()
@@ -147,17 +169,37 @@ export default function HomeTeacherPage() {
 
   const goDetail = ({item}) => {
     return (
-      <View style={{
-        height: 250,
-        padding:10,
-        justifyContent: 'center',
-        backgroundColor: 'floralwhite',
-        borderRadius:20
-      }}>
-        <Text style={{fontSize: 20}}>{item.title}</Text>
+      <TouchableOpacity onPress={() => console.log('oke')}>
+      <View
+        style={{
+          height: 250,
+          padding: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "floralwhite",
+          borderRadius: 20,
+        }}
+      >
+        <Text style={{left: "-30%", top: "-20%", fontSize: 20, fontWeight: 'bold'}}>Ongoing Order</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Image
+            source={{
+              uri: "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg",
+            }}
+            style={styles.profileImg}
+          />
+          <View>
+            <Text style={{ fontSize: 13 }}>Name: {item.Student.name}</Text>
+            <Text style={{ fontSize: 13 }}>Subject: {item.subject}</Text>
+            <Text style={{ fontSize: 13 }}>Address: {item.Student.address}</Text>
+            <Text style={{ fontSize: 13 }}>Date: {new Date(item.date).toLocaleDateString()}</Text>
+          </View>
+        </View>
       </View>
+      </TouchableOpacity>
     )
   };
+  
   const goSquare = ({item}) => {
     return (
       <View style={{
@@ -191,7 +233,7 @@ export default function HomeTeacherPage() {
       </View>
       <Text style={{ fontSize: 20, color: 'white', marginLeft: '6%' }}>Pak Agus</Text>
       <View style={{flex:1, flexDirection: 'row', justifyContent: "center", marginTop: '5%'}}>
-      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={350} renderItem={goDetail}></Carousel>
+        <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={orders} itemWidth={350} renderItem={goDetail}></Carousel>
       </View>
       <Text style={{ fontSize: 26, color: "#48bcae", marginLeft: '5%', top: '5%' }}>List Students</Text>
       <View style={{flex:1, flexDirection: 'row', marginLeft: '-20%', marginTop: '15%',}}>
@@ -241,4 +283,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
   },
+  profileImg: {
+    width: 100,
+    height: 100,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+    borderWidth: 3,
+    borderColor: "red"
+  }
 });
