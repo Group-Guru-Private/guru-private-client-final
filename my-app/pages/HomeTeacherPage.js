@@ -7,7 +7,8 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
-  Switch
+  Switch,
+  Alert
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -31,6 +32,8 @@ import {
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const photo = [
   {
@@ -78,48 +81,70 @@ const photo = [
 ];
 
 export default function HomeTeacherPage() {
-  // const [image, setImage] = useState(null);
-  const [teachers, setTeachers] = useState([]);
-  const navigate = useNavigation();
-  const [isEnabled, setIsEnabled] = useState(true);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
+  const [isEnabled, setIsEnabled] = useState();
+  
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
 
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((data) => setTeachers(data));
+    getDataById()
 
     return function cleanUp() {
       abortController.abort()
     }
   },[])
+  
+  async function toggleSwitch (value) {
+    setIsEnabled(value)
 
-  //     useEffect(() => {
-  //         (async () => {
-  //           if (Platform.OS !== 'web') {
-  //             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //             if (status !== 'granted') {
-  //               alert('Sorry, we need camera roll permissions to make this work!');
-  //             }
-  //           }
-  //         })();
-  //       }, []);
+    try {
+      const access_token = await AsyncStorage.getItem('access_token')
+      
+      axios({
+        url: `http://192.168.0.100:3000/teachers`,
+        method: 'PATCH',
+        headers: {
+          access_token: access_token
+        },
+        data: {
+          status: value
+        }
+      })
+      .then(({data}) => {
+        
+        if(value){
+          Alert.alert(`Working`)
+        }else{
+          Alert.alert(`Off Working`)
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  //     const pickImage = async () => {
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //       allowsEditing: true,
-  //       aspect: [4, 3],
-  //       quality: 1,
-  //     });
+  async function getDataById () {
+    try {
+      const value = await AsyncStorage.getItem('id')
+      
+      axios({
+        url: `http://192.168.0.100:3000/teachers/${value}`,
+        method: 'GET'
+      })
+      .then(({data}) => {
+        setIsEnabled(data.available_status)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //     if (!result.cancelled) {
-  //       setImage(result.uri);
-  //     }
-  //   };
   const goDetail = ({item}) => {
     return (
       <View style={{
@@ -160,7 +185,7 @@ export default function HomeTeacherPage() {
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
+          onValueChange={value => {toggleSwitch(value)}}
           value={isEnabled}
         />
       </View>
@@ -170,9 +195,8 @@ export default function HomeTeacherPage() {
       </View>
       <Text style={{ fontSize: 26, color: "#48bcae", marginLeft: '5%', top: '5%' }}>List Students</Text>
       <View style={{flex:1, flexDirection: 'row', marginLeft: '-20%', marginTop: '15%',}}>
-      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={200} renderItem={goSquare  }></Carousel>
+      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={200} renderItem={goSquare}></Carousel>
       </View>
-    
    </SafeAreaView>
   );
 }
