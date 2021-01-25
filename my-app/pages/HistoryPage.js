@@ -42,7 +42,6 @@ export default function HomePage() {
   };
 
   return (
-    // <SafeAreaView style={styles.container}>
     <>
       <View style={styles.top}></View>
       <Text style={styles.title}>History</Text>
@@ -70,7 +69,6 @@ export default function HomePage() {
         ))}
       </ScrollView>
       </>
-    // </SafeAreaView>
   );
 }
 

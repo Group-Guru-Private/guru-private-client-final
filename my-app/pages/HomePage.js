@@ -31,112 +31,216 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
 
+const convertPrice = (price) => {
+  return price.toLocaleString('en-US', { style: 'currency', currency: 'JPY' })
+}
+
 const photo = [
   {
     albumId: 1,
     id: 1,
-    title: "accusamus beatae ad facilis cum similique qui sunt",
+    name: "Zaidan ammar",
+    distance: 2,
+    rating: 2,
+    price: convertPrice(8676876),
     url: "https://via.placeholder.com/600/92c952",
     thumbnailUrl: "https://via.placeholder.com/150/92c952",
   },
   {
     albumId: 1,
     id: 2,
-    title: "reprehenderit est deserunt velit ipsam",
-    url: "https://via.placeholder.com/600/771796",
+    rating: 3,
+    name: "farhat 3",
+    distance: 2.3,
+    price: 100000,
+    url:
+      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
     thumbnailUrl: "https://via.placeholder.com/150/771796",
   },
   {
     albumId: 1,
     id: 3,
-    title: "officia porro iure quia iusto qui ipsa ut modi",
-    url: "https://via.placeholder.com/600/24f355",
+    rating: 1,
+    name: "farhat 2",
+    distance: 2.9,
+    price: 100000,
+    url:
+      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
     thumbnailUrl: "https://via.placeholder.com/150/24f355",
   },
   {
     albumId: 1,
     id: 4,
-    title: "culpa odio esse rerum omnis laboriosam voluptate repudiandae",
-    url: "https://via.placeholder.com/600/d32776",
+    rating: 5,
+    name: "farhat 1",
+    distance: 4.3,
+    price: 100000,
+    url:
+      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
     thumbnailUrl: "https://via.placeholder.com/150/d32776",
   },
   {
     albumId: 1,
     id: 5,
-    title: "natus nisi omnis corporis facere molestiae rerum in",
-    url: "https://via.placeholder.com/600/f66b97",
+    name: "farhat 4",
+    distance: 1.3,
+    rating: 4,
+    price: 100000,
+    url:
+      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
     thumbnailUrl: "https://via.placeholder.com/150/f66b97",
   },
   {
     albumId: 1,
     id: 6,
-    title: "accusamus ea aliquid et amet sequi nemo",
-    url: "https://via.placeholder.com/600/56a8c2",
+    name: "farhat 5",
+    distance: 8.3,
+    rating: 3,
+    price: 100000,
+    url:
+      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
     thumbnailUrl: "https://via.placeholder.com/150/56a8c2",
   },
 ];
+const sort  = photo.filter(el => el.rating > 3)
+
+
+// var angka = 13531153
+// var locale = angka.toLocaleString('en-US', { style: 'currency', currency: 'JPY' })
+// console.log(angka, '<<<<<<')
+// console.log(locale, '<<<')
+
 
 export default function HomePage() {
   // const [image, setImage] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const navigate = useNavigation();
+  const SLIDER_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
-    const abortController = new AbortController()
-    const signal = abortController.signal
+    const abortController = new AbortController();
+    const signal = abortController.signal;
 
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((res) => res.json())
       .then((data) => setTeachers(data));
 
     return function cleanUp() {
-      abortController.abort()
-    }
-  },[])
+      abortController.abort();
+    };
+  }, []);
 
- 
-  const goDetail = ({item}) => {
+  const goDetail = ({ item }) => {
     return (
-      <View style={{
-        height: 250,
-        padding:10,
-        justifyContent: 'center',
-        backgroundColor: 'floralwhite',
-        borderRadius:20
-      }}>
-        <Text style={{fontSize: 20}}>{item.title}</Text>
-        {/* <Image source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png'}} style={{width: 100, height: 100}}></Image> */}
+      <View
+        style={{
+          height: 250,
+          padding: 10,
+          justifyContent: "center",
+          backgroundColor: "floralwhite",
+          borderRadius: 20,
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>{item.name}</Text>
+        <Image
+          source={{
+            uri:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmpoQaaw13BKAmYv1iRPzkz9AkM0ZskCqK_g&usqp=CAU",
+          }}
+          style={{ width: 100, height: 100 }}
+        ></Image>
       </View>
-    )
+    );
   };
-  const goSquare = ({item}) => {
+  const goSquare = ({ item }) => {
     return (
-      <View style={{
-        height: 150,
-        padding:10,
-        justifyContent: 'center',
-        backgroundColor: 'floralwhite',
-        borderRadius:20
-      }}>
-        <Text style={{fontSize: 20}}>{item.title}</Text>
-      </View>
-    )
+      <TouchableOpacity onPress={() => goOrder(item)}>
+        <View
+          style={{
+            height: 150,
+            padding: 10,
+            justifyContent: "center",
+            backgroundColor: "floralwhite",
+            borderRadius: 20,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Image
+            source={{
+              uri:
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmpoQaaw13BKAmYv1iRPzkz9AkM0ZskCqK_g&usqp=CAU",
+            }}
+            style={{ width: 70, height: 70 }}
+          ></Image>
+          <View>
+            <Text style={{ fontSize: 14, marginLeft: "7%" }}>{item.name}</Text>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text style={{ fontSize: 10, marginLeft: "10%" }}>
+                R: {item.rating}
+              </Text>
+              <Text style={{ fontSize: 10, marginRight: "30%" }}>
+                D: {item.distance}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 10, marginLeft: "7%" }}>{item.price}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
-  const SLIDER_WIDTH = Dimensions.get('window').width
+  const goOrder = (teacher) => {
+    navigate.replace('Order', {teacher})
+    console.log(teacher)
+  };
 
   return (
     // <SafeAreaView style={styles.container}>
     <>
       <View style={styles.top}></View>
       <Title style={styles.title}>Hello!</Title>
-      <Text style={{ fontSize: 20, color: 'white', marginLeft: '6%' }}>Zaidan Ammar</Text>
-      <View style={{flex:1, flexDirection: 'row', justifyContent: "center", marginTop: '5%'}}>
-      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={350} renderItem={goDetail}></Carousel>
+      <Text style={{ fontSize: 20, color: "white", marginLeft: "6%" }}>
+        Zaidan Ammar
+      </Text>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: "5%",
+        }}
+      >
+        <Carousel
+          layout={"default"}
+          sliderWidth={SLIDER_WIDTH}
+          data={photo}
+          itemWidth={350}
+          renderItem={goDetail}
+        ></Carousel>
       </View>
-      <Text style={{ fontSize: 26, color: "#48bcae", marginLeft: '5%', top: '5%' }}>Top teacher on the week</Text>
-      <View style={{flex:1, flexDirection: 'row', marginLeft: '-20%', marginTop: '15%',}}>
-      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={200} renderItem={goSquare  }></Carousel>
+      <Text
+        style={{ fontSize: 26, color: "#48bcae", marginLeft: "5%", top: "5%" }}
+      >
+        Top teacher on the week
+      </Text>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          marginLeft: "-20%",
+          marginTop: "15%",
+        }}
+      >
+        <Carousel
+          layout={"default"}
+          sliderWidth={SLIDER_WIDTH}
+          data={sort}
+          itemWidth={200}
+          renderItem={goSquare}
+        ></Carousel>
       </View>
     </>
     // </SafeAreaView>
