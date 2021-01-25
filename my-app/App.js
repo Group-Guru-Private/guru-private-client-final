@@ -8,6 +8,7 @@ import ProfilePage from './pages/ProfilePage'
 import OrderPage from './pages/OrderPage'
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage'
+import OngoingOrderPage from './pages/OngoingOrderPage'
 
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
@@ -26,6 +27,7 @@ export default function App() {
           <Stack.Screen name="Register" component={RegisterPage} />
           <Stack.Screen name="Login" component={LoginPage} />
           <Stack.Screen name="Order"  options={{headerTransparent: true, title: null}}  component={OrderPage} />
+          <Stack.Screen name="OngoingOrder" component={OngoingOrderPage} />
           <Stack.Screen name="BottomNav" options={{headerTransparent: true, title: null}} component={BottomNav}/>
           <Stack.Screen name="BottomNavTeacher" options={{headerTransparent: true, title: null}} component={BottomNavTeacher}/>
         </Stack.Navigator>
