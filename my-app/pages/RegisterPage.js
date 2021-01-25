@@ -95,7 +95,7 @@ export default function RegisterPage() {
           address: inputData.address,
           telpon_number: inputData.phone,
           position: [position.latitude, position.longitude],
-          subjects: [inputData.selectedSubject],
+          subjects: inputData.selectedSubject,
           background: inputData.background,
           price: 0,
           image_url: 'https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg'
@@ -278,6 +278,5 @@ const styles = StyleSheet.create({
         width: '50%'
     },
     test: {
-      top: -70
     }
 });

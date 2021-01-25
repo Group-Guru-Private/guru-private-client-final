@@ -1,19 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Image } from 'react-native';
-import { Picker } from '@react-native-picker/picker'
+import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Image, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function OrderPage({navigation, route}) {
-    const [subject, setSubject] = useState('')
+    const { teacher } = route.params
+    const [subject, setSubject] = useState(teacher.subjects[0])
     const listSubjects = ['Biology', 'Mathematics', 'English', 'Programming']
 
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-    const { teacher } = route.params
 
     const dataTeacher = {
         id: '123',
@@ -44,6 +46,34 @@ export default function OrderPage({navigation, route}) {
         showMode('date');
       };
 
+      const submitOrder = async () => {
+        try {
+          const value = await AsyncStorage.getItem('access_token')
+          if(value !== null) {
+            axios({
+              url: `http://192.168.0.100:3000/orders/${teacher.id}`,
+              method: 'POST',
+              data: {
+                subject: subject,
+                date: date,
+                distance: 20
+              },
+              headers: {
+                access_token: value
+              }
+            })
+            .then(({data}) => {
+              Alert.alert(JSON.stringify(data))
+            })
+            .catch(err => {
+              console.log(err);
+            })
+          }
+        } catch(e) {
+          // error reading value
+          console.log(e);
+        }
+      }
 
     return (
         <LinearGradient
@@ -51,38 +81,6 @@ export default function OrderPage({navigation, route}) {
               colors={['#008bb5','#48bcae']}
               style={{height: '100%'}}
           >
-            <View style={styles.top}></View>
-            <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={styles.title}>Order</Text>
-        {/* <MaterialCommunityIcons
-          style={styles.icon}
-          name="logout"
-          color="white"
-          size={26}
-          onPress={(e) => {
-            navigate.replace("Landing");
-          }}
-        ></MaterialCommunityIcons> */}
-      </View>
-      <View style={styles.container}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Image
-            source={{
-              uri:
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            }}
-            style={styles.profileImg}
-          />
-          <View style={{ justifyContent: "center", marginRight: "28%" }}>
-            <Text style={styles.text}>casas</Text>
-            <Text style={styles.text2}>acsacsca</Text>
-            <Text style={styles.text2}>1335153136</Text>
           </View>
         </View>
         </View>
@@ -95,7 +93,7 @@ export default function OrderPage({navigation, route}) {
                 onValueChange={(itemValue, itemIndex) => setSubject(itemValue)}
               >
               {
-                listSubjects.map((mapel, index) => {
+                teacher.subjects.map((mapel, index) => {
                     return <Picker.Item key={index} label={mapel} value={mapel} />
                 })
               }
@@ -113,7 +111,7 @@ export default function OrderPage({navigation, route}) {
                     onChange={onChange}
                 />
                 )}
-              <TouchableHighlight style={styles.button} onPress={e => {console.log({teacherId: teacher.id})}}>
+              <TouchableHighlight style={styles.button} onPress={e => {submitOrder()}}>
                 <Text>Order</Text>
               </TouchableHighlight>
           </View>

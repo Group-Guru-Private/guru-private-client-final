@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native'
 import CheckBox from '@react-native-community/checkbox'
 import axios from 'axios'
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -17,41 +17,53 @@ export default function LoginPage() {
 
     function handleLogin() {
         if(isSelected){
-                // axios({
-                //     url: 'http://192.168.0.100:3000/teachers/login',
-                //     method: 'POST',
-                //     data: {
-                //         email: email,
-                //         password: password
-                //     }
-                // })
-                // .then(({data}) => {
-                //     console.log(data)
-                    navigate.replace('BottomNavTeacher')
-                // })
-                // .catch(err => {
-                //     console.log(err);
-                //     Alert.alert('Invalid Email or Password')
-                // })
+                axios({
+                    url: 'http://192.168.0.100:3000/teachers/login',
+                    method: 'POST',
+                    data: {
+                        email: email,
+                        password: password
+                    }
+                })
+                .then(async ({data}) => {
+                    console.log(data.access_token)
+                    try {
+                        await AsyncStorage.setItem('access_token', data.access_token)
+                        navigate.replace('BottomNavTeacher')
+                    } catch (err) {
+                        // saving error
+                        console.log(err)
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    Alert.alert('Invalid Email or Password')
+                })
             
         } else {
             
-            // axios({
-            //     url: 'http://192.168.0.100:3000/students/login',
-            //     method: 'POST',
-            //     data: {
-            //         email: email,
-            //         password: password
-            //     }
-            // })
-            // .then(({data}) => {
-            //     console.log(data)
-                navigate.replace('BottomNav')
-    //         })
-    //         .catch(err => {
-    //             console.log(err);
-    //             Alert.alert('Invalid Email or Password')
-    //         })
+            axios({
+                url: 'http://192.168.0.100:3000/students/login',
+                method: 'POST',
+                data: {
+                    email: email,
+                    password: password
+                }
+            })
+            .then(async ({data}) => {
+                console.log(data.access_token)
+                try {
+                    await AsyncStorage.setItem('access_token', data.access_token)
+                    navigate.replace('BottomNav')
+                } catch (err) {
+                    // saving error
+                    console.log(err)
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                Alert.alert('Invalid Email or Password')
+            })
         }
     }
 

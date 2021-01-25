@@ -51,33 +51,7 @@ export default function ListTeachersPage() {
     })
   }, [])
 
-  // fetch("https://jsonplaceholder.typicode.com/users")
-  //   .then((res) => res.json())
-  //   .then((data) => setTeachers(data));
-
-  //     useEffect(() => {
-  //         (async () => {
-  //           if (Platform.OS !== 'web') {
-  //             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //             if (status !== 'granted') {
-  //               alert('Sorry, we need camera roll permissions to make this work!');
-  //             }
-  //           }
-  //         })();
-  //       }, []);
-
-  //     const pickImage = async () => {
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //       allowsEditing: true,
-  //       aspect: [4, 3],
-  //       quality: 1,
-  //     });
-
-  //     if (!result.cancelled) {
-  //       setImage(result.uri);
-  //     }
-  //   };
+  
   const goDetail = (teacher) => {
     navigate.push('Order', { teacher })
   };
@@ -110,6 +84,12 @@ export default function ListTeachersPage() {
                       <Text note>Rp: 100.000</Text>
                     </Body>
                   </Left>
+                  <Right>
+                    <Body>
+                      <Text note>Rating : {teacher.rating}</Text>
+                      <Text note>Distance : {teacher.position}</Text>
+                    </Body>
+                  </Right>
                 </CardItem>
               </Card>
             </TouchableOpacity>
