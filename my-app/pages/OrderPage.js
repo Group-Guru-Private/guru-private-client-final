@@ -32,50 +32,50 @@ export default function OrderPage({navigation, route}) {
         distancePrice: 30000
     }
 
-      const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
-        setDate(currentDate);
-      };
+    const onChange = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setShow(Platform.OS === 'ios');
+      setDate(currentDate);
+    };
+  
+    const showMode = (currentMode) => {
+      setShow(true);
+      setMode(currentMode);
+    };
+  
+    const showDatepicker = () => {
+      showMode('date');
+    };
     
-      const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-      };
-    
-      const showDatepicker = () => {
-        showMode('date');
-      };
-
-      const submitOrder = async () => {
-        try {
-          const value = await AsyncStorage.getItem('access_token')
-          if(value !== null) {
-            axios({
-              url: `http://192.168.0.100:3000/orders/${teacher.id}`,
-              method: 'POST',
-              data: {
-                subject: subject,
-                date: date,
-                distance: 20
-              },
-              headers: {
-                access_token: value
-              }
-            })
-            .then(({data}) => {
-              Alert.alert(`Order Success`)
-              navigate.replace('BottomNav')
-            })
-            .catch(err => {
-              console.log(err);
-            })
-          }
-        } catch(e) {
-          // error reading value
-          console.log(e);
+    const submitOrder = async () => {
+      try {
+        const value = await AsyncStorage.getItem('access_token')
+        if(value !== null) {
+          axios({
+            url: `http://192.168.0.100:3000/orders/${teacher.id}`,
+            method: 'POST',
+            data: {
+              subject: subject,
+              date: date,
+              distance: 20
+            },
+            headers: {
+              access_token: value
+            }
+          })
+          .then(({data}) => {
+            Alert.alert(`Order Success`)
+            navigate.replace('BottomNav')
+          })
+          .catch(err => {
+            console.log(err);
+          })
         }
+      } catch(e) {
+        // error reading value
+        console.log(e);
       }
+    }
 
     return (
         <LinearGradient

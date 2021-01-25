@@ -6,6 +6,7 @@ import {
   View,
   SafeAreaView,
   ScrollView,
+  TouchableHighlight
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -43,7 +44,10 @@ export default function ListTeachersPage() {
       method: 'GET'
     })
     .then(({data}) => {
-      setTeachers(data)
+      const filteredData = data.filter(el => {
+        return el.available_status == true
+      })
+      setTeachers(filteredData)
       setLoading(false)
     })
     .catch(err => {
@@ -77,10 +81,11 @@ export default function ListTeachersPage() {
               <Card style={{ borderRadius: 20 }}>
                 <CardItem style={styles.borderTop}>
                   <Left>
-                    <Thumbnail />
+                    <Image source={{ uri: teacher.image_url }} style={styles.profileImg} />
                     <Body>
                       <Text>{teacher.name}</Text>
                       <Text note>{teacher.email}</Text>
+                      <Text note>Rp: 100.000</Text>
                       <Text note>Rp: 100.000</Text>
                     </Body>
                   </Left>
@@ -142,4 +147,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
   },
+  profileImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "gray"
+  }
 });
