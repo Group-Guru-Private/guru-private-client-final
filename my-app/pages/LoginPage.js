@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native'
 import CheckBox from '@react-native-community/checkbox'
 import axios from 'axios'
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -25,9 +25,15 @@ export default function LoginPage() {
                         password: password
                     }
                 })
-                .then(({data}) => {
-                    console.log(data)
-                    navigate.replace('BottomNavTeacher')
+                .then(async ({data}) => {
+                    console.log(data.access_token)
+                    try {
+                        await AsyncStorage.setItem('access_token', data.access_token)
+                        navigate.replace('BottomNavTeacher')
+                    } catch (err) {
+                        // saving error
+                        console.log(err)
+                    }
                 })
                 .catch(err => {
                     console.log(err);
@@ -44,9 +50,15 @@ export default function LoginPage() {
                     password: password
                 }
             })
-            .then(({data}) => {
-                console.log(data)
-                navigate.replace('BottomNav')
+            .then(async ({data}) => {
+                console.log(data.access_token)
+                try {
+                    await AsyncStorage.setItem('access_token', data.access_token)
+                    navigate.replace('BottomNav')
+                } catch (err) {
+                    // saving error
+                    console.log(err)
+                }
             })
             .catch(err => {
                 console.log(err);
