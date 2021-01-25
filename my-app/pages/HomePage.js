@@ -148,6 +148,7 @@ export default function HomePage() {
 
   const goDetail = ({ item }) => {
     return (
+      <TouchableOpacity onPress={() => navigate.push('OngoingOrder', { teacher: item.Teacher, subject: item.subject })}>
       <View
         style={{
           height: 250,
@@ -162,19 +163,19 @@ export default function HomePage() {
         <View style={{flexDirection: 'row'}}>
           <Image
             source={{
-              uri:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmpoQaaw13BKAmYv1iRPzkz9AkM0ZskCqK_g&usqp=CAU",
+              uri: item.Teacher.image_url,
             }}
-            style={{ width: 100, height: 100 }}
+            style={styles.profileImg}
           />
           <View>
-            <Text style={{ fontSize: 15 }}>Name: {item.Teacher.name}</Text>
-            <Text style={{ fontSize: 15 }}>Subject: {item.subject}</Text>
-            <Text style={{ fontSize: 15 }}>Address: {item.Teacher.address}</Text>
-            <Text style={{ fontSize: 15 }}>Date: {new Date(item.date).toLocaleDateString()}</Text>
+            <Text style={{ fontSize: 13 }}>Name: {item.Teacher.name}</Text>
+            <Text style={{ fontSize: 13 }}>Subject: {item.subject}</Text>
+            <Text style={{ fontSize: 13 }}>Address: {item.Teacher.address}</Text>
+            <Text style={{ fontSize: 13 }}>Date: {new Date(item.date).toLocaleDateString()}</Text>
           </View>
         </View>
       </View>
+      </TouchableOpacity>
     );
   };
   const goSquare = ({ item }) => {
@@ -312,4 +313,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
   },
+  profileImg: {
+    width: 100,
+    height: 100,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+    borderWidth: 3,
+    borderColor: "red"
+  }
 });
+

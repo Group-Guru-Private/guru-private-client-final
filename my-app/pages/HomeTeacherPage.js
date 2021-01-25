@@ -6,7 +6,8 @@ import {
   View,
   SafeAreaView,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Switch
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -80,6 +81,8 @@ export default function HomeTeacherPage() {
   // const [image, setImage] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const navigate = useNavigation();
+  const [isEnabled, setIsEnabled] = useState(true);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   useEffect(() => {
     const abortController = new AbortController()
@@ -147,10 +150,20 @@ export default function HomeTeacherPage() {
   const SLIDER_WIDTH = Dimensions.get('window').width
 
   return (
-    // <SafeAreaView style={styles.container}>
-    <>
+    <SafeAreaView style={styles.container}>
+
       <View style={styles.top}></View>
-      <Title style={styles.title}>Hello!</Title>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Title style={styles.title}>Hello!</Title>
+        <Switch
+          style={{right: "10%", top: "5%"}}
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+        />
+      </View>
       <Text style={{ fontSize: 20, color: 'white', marginLeft: '6%' }}>Pak Agus</Text>
       <View style={{flex:1, flexDirection: 'row', justifyContent: "center", marginTop: '5%'}}>
       <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={350} renderItem={goDetail}></Carousel>
@@ -159,8 +172,8 @@ export default function HomeTeacherPage() {
       <View style={{flex:1, flexDirection: 'row', marginLeft: '-20%', marginTop: '15%',}}>
       <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={200} renderItem={goSquare  }></Carousel>
       </View>
-    </>
-    // </SafeAreaView>
+    
+   </SafeAreaView>
   );
 }
 
