@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -30,10 +31,8 @@ import {
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
-
-const convertPrice = (price) => {
-  return price.toLocaleString('en-US', { style: 'currency', currency: 'JPY' })
-}
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const photo = [
   {
@@ -42,7 +41,7 @@ const photo = [
     name: "Zaidan ammar",
     distance: 2,
     rating: 2,
-    price: convertPrice(8676876),
+    price: 8676876,
     url: "https://via.placeholder.com/600/92c952",
     thumbnailUrl: "https://via.placeholder.com/150/92c952",
   },
@@ -113,7 +112,7 @@ const sort  = photo.filter(el => el.rating > 3)
 
 export default function HomePage() {
   // const [image, setImage] = useState(null);
-  const [teachers, setTeachers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const navigate = useNavigation();
   const SLIDER_WIDTH = Dimensions.get("window").width;
 
@@ -121,9 +120,26 @@ export default function HomePage() {
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((data) => setTeachers(data));
+    axios(({
+      url: 'http://192.168.0.100:3000/orders/',
+      method: 'GET'
+    }))
+      .then(async ({data}) => {
+        try {
+          const asyncId = await AsyncStorage.getItem('id')
+          const filteredData = data.filter(el => {
+            return el.StudentId == asyncId
+          })
+          console.log(filteredData)
+          setOrders(filteredData)
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        Alert.alert(err)
+      })
 
     return function cleanUp() {
       abortController.abort();
@@ -136,19 +152,28 @@ export default function HomePage() {
         style={{
           height: 250,
           padding: 10,
+          alignItems: "center",
           justifyContent: "center",
           backgroundColor: "floralwhite",
           borderRadius: 20,
         }}
       >
-        <Text style={{ fontSize: 20 }}>{item.name}</Text>
-        <Image
-          source={{
-            uri:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmpoQaaw13BKAmYv1iRPzkz9AkM0ZskCqK_g&usqp=CAU",
-          }}
-          style={{ width: 100, height: 100 }}
-        ></Image>
+        <Text style={{left: "-35%", top: "-20%", fontSize: 20, fontWeight: 'bold'}}>Ongoing</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Image
+            source={{
+              uri:
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmpoQaaw13BKAmYv1iRPzkz9AkM0ZskCqK_g&usqp=CAU",
+            }}
+            style={{ width: 100, height: 100 }}
+          />
+          <View>
+            <Text style={{ fontSize: 15 }}>Name: {item.Teacher.name}</Text>
+            <Text style={{ fontSize: 15 }}>Subject: {item.subject}</Text>
+            <Text style={{ fontSize: 15 }}>Address: {item.Teacher.address}</Text>
+            <Text style={{ fontSize: 15 }}>Date: {new Date(item.date).toLocaleDateString()}</Text>
+          </View>
+        </View>
       </View>
     );
   };
@@ -216,7 +241,7 @@ export default function HomePage() {
         <Carousel
           layout={"default"}
           sliderWidth={SLIDER_WIDTH}
-          data={photo}
+          data={orders}
           itemWidth={350}
           renderItem={goDetail}
         ></Carousel>

@@ -7,12 +7,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from '@react-navigation/native'
 
 export default function OrderPage({navigation, route}) {
     const { teacher } = route.params
     const [subject, setSubject] = useState(teacher.subjects[0])
     const listSubjects = ['Biology', 'Mathematics', 'English', 'Programming']
-
+    const navigate = useNavigation()
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
@@ -63,7 +64,8 @@ export default function OrderPage({navigation, route}) {
               }
             })
             .then(({data}) => {
-              Alert.alert(JSON.stringify(data))
+              Alert.alert(`Order Success`)
+              navigate.replace('BottomNav')
             })
             .catch(err => {
               console.log(err);
@@ -81,9 +83,23 @@ export default function OrderPage({navigation, route}) {
               colors={['#008bb5','#48bcae']}
               style={{height: '100%'}}
           >
+          <View style={styles.container}>
+              <View style={{flexDirection: 'row'}}>
+                <Image source={{ uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}} style={styles.profileImg} />
+                <View>
+                    <Text>{teacher.name}</Text>
+                    <Text>{teacher.email}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text>{dataTeacher.distance} km</Text>
+                        <Text>{dataTeacher.rating}</Text>
+                    </View>
+                </View>
+              </View>
+              <View>
+                <Text>{teacher.background}</Text>
+                <Text>{teacher.telpon_number}</Text>
+              </View>
           </View>
-        </View>
-        </View>
           <View
               style={styles.containerbot}
           >
@@ -122,77 +138,42 @@ export default function OrderPage({navigation, route}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '-55%',
-    justifyContent: "space-between",
-    // flexDirection: "row",
-    marginLeft: "5%",
-  },
-    image: {
-        flex: 1,
-        resizeMode: 'repeat',
-        justifyContent: "center",
-        alignItems: 'center'
-    },
-    containerbot: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    top: {
-      width: "100%",
-      height: "35%",
-      backgroundColor: "rgba(127,125,120, 0.9)",
-      borderBottomRightRadius: 25,
-      borderBottomLeftRadius: 25,
-      position: "absolute",
-    },title: {
-      // flex: 1,
-      marginTop: "10%",
-      marginBottom: "5%",
-      marginLeft: "5%",
-      textAlign: "left",
-      fontSize: 32,
-      fontWeight: "500",
-      color: "white",
-    },  
-    icon: {
-      marginTop: "10%",
-      marginRight: "3%",
-    },
-    button: {
-      alignItems: 'center',
-      borderWidth: 3,
-      borderColor: 'black',
-      borderRadius: 30,
-      width: '30%',
-      height: '10%'
-    },
-    profileImg: {
-        width: 100,
-        height: 100,
-        borderRadius: 150 / 2,
-        overflow: "hidden",
-        borderWidth: 3,
-        borderColor: "red"
-    },
-    input: {
-        height: '10%',
-        width: '50%',
-        borderColor: 'gray',
-        borderWidth: 1,
-        textAlign: 'center',
-        backgroundColor: 'white',
-        margin: 10,
-    },
-    text: {
-      fontSize: 22,
-      fontWeight: "500",
-      color: "floralwhite",
-      marginBottom: "3%",
-    },
-    text2: {
-      fontSize: 16,
-      fontWeight: "300",
-      color: "floralwhite",
-      marginBottom: "3%",
-    },
+    alignItems: 'center',
+    justifyContent: 'center'
+},
+image: {
+    flex: 1,
+    resizeMode: 'repeat',
+    justifyContent: "center",
+    alignItems: 'center'
+},
+containerbot: {
+    flex: 1,
+    alignItems: 'center'
+},
+button: {
+  alignItems: 'center',
+  borderWidth: 3,
+  borderColor: 'black',
+  borderRadius: 30,
+  width: '30%',
+  height: '10%'
+},
+profileImg: {
+    width: 100,
+    height: 100,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+    borderWidth: 3,
+    borderColor: "red"
+},
+input: {
+    height: '10%',
+    width: '50%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    textAlign: 'center',
+    backgroundColor: 'white',
+    margin: 10,
+}
 });
