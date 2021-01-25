@@ -17,41 +17,41 @@ export default function LoginPage() {
 
     function handleLogin() {
         if(isSelected){
-                axios({
-                    url: 'http://192.168.0.100:3000/teachers/login',
-                    method: 'POST',
-                    data: {
-                        email: email,
-                        password: password
-                    }
-                })
-                .then(({data}) => {
-                    console.log(data)
+                // axios({
+                //     url: 'http://192.168.0.100:3000/teachers/login',
+                //     method: 'POST',
+                //     data: {
+                //         email: email,
+                //         password: password
+                //     }
+                // })
+                // .then(({data}) => {
+                //     console.log(data)
                     navigate.replace('BottomNavTeacher')
-                })
-                .catch(err => {
-                    console.log(err);
-                    Alert.alert('Invalid Email or Password')
-                })
+                // })
+                // .catch(err => {
+                //     console.log(err);
+                //     Alert.alert('Invalid Email or Password')
+                // })
             
         } else {
             
-            axios({
-                url: 'http://192.168.0.100:3000/students/login',
-                method: 'POST',
-                data: {
-                    email: email,
-                    password: password
-                }
-            })
-            .then(({data}) => {
-                console.log(data)
+            // axios({
+            //     url: 'http://192.168.0.100:3000/students/login',
+            //     method: 'POST',
+            //     data: {
+            //         email: email,
+            //         password: password
+            //     }
+            // })
+            // .then(({data}) => {
+            //     console.log(data)
                 navigate.replace('BottomNav')
-            })
-            .catch(err => {
-                console.log(err);
-                Alert.alert('Invalid Email or Password')
-            })
+    //         })
+    //         .catch(err => {
+    //             console.log(err);
+    //             Alert.alert('Invalid Email or Password')
+    //         })
         }
     }
 
