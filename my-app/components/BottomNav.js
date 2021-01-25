@@ -24,11 +24,12 @@ export default function BottomNav() {
   if(!loaded) return null
 
   return (
-      <Tab.Navigator activeColor={'aqua'}>
+      <Tab.Navigator activeColor={'aqua'} inactiveColor={'white'}>
         <Tab.Screen
           name="Home"
           component={HomePage}
           options={{
+            tabBarColor: 'black',
             tabBarLabel: " ",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="home" color={color} size={26} />
@@ -39,6 +40,7 @@ export default function BottomNav() {
           name="ListTeacher"
           component={ListTeachersPage}
           options={{
+            tabBarColor: 'black',
             tabBarLabel: " ",
             tabBarIcon: ({ color }) => (
               <AntDesign name="bars" color={color} size={26} />
@@ -49,6 +51,7 @@ export default function BottomNav() {
           name="History"
           component={HistoryPage}
           options={{
+            tabBarColor: 'black',
             tabBarLabel: " ",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="history" color={color} size={26} />
@@ -59,6 +62,7 @@ export default function BottomNav() {
           name="Profile"
           component={ProfilePage}
           options={{
+            tabBarColor: 'black',
             tabBarLabel: " ",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="account" color={color} size={26} />
