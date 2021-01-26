@@ -61,7 +61,7 @@ export default function OrderPage({ navigation, route }) {
       const value = await AsyncStorage.getItem("access_token");
       if (value !== null) {
         axios({
-          url: `http://192.168.1.3:3000/orders/${teacher.id}`,
+          url: `http://192.168.0.100:3000/orders/${teacher.id}`,
           method: "POST",
           data: {
             subject: subject,
@@ -85,7 +85,7 @@ export default function OrderPage({ navigation, route }) {
       console.log(e);
     }
   };
-
+  
   return (
     <LinearGradient
       // Background Linear Gradient

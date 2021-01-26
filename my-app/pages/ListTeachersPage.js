@@ -30,17 +30,32 @@ import {
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios'
+import { Picker } from "@react-native-picker/picker";
 
 export default function ListTeachersPage() {
   // const [image, setImage] = useState(null);
   const [teachers, setTeachers] = useState([]);
+  const [allTeachers, setAllTeachers] = useState([]);
   const navigate = useNavigation();
   const [loading, setLoading] = useState(false)
+  const [filterSubject, setFilterSubject] = useState('')
+  const allSubjects = [
+    "Mathematics",
+    "English",
+    "Chemisty",
+    "Physics",
+    "Biology",
+    "Bahasa Indonesia",
+    "History",
+    "Geography",
+    "Sociology",
+    "Economics",
+  ]
 
   useEffect(() => {
     setLoading(true)
     axios({
-      url: 'http://192.168.1.3:3000/teachers',
+      url: 'http://192.168.0.100:3000/teachers',
       method: 'GET'
     })
     .then(({data}) => {
@@ -48,6 +63,7 @@ export default function ListTeachersPage() {
         return el.available_status == false
       })
       setTeachers(filteredData)
+      setAllTeachers(filteredData)
       setLoading(false)
     })
     .catch(err => {
@@ -55,7 +71,26 @@ export default function ListTeachersPage() {
     })
   }, [])
 
-  
+  function handleFilterSubject(itemValue){
+    let filterByItemValue = []
+    setFilterSubject(itemValue)
+
+    if(itemValue == ''){
+      const duplicate = allTeachers
+      setTeachers(duplicate)
+    }else{
+      allTeachers.forEach(element1 => {
+        element1.subjects.forEach(element2 => {
+          if(element2 == itemValue){
+            filterByItemValue.push(element1)
+          }
+        })
+      })
+      setTeachers(filterByItemValue)
+    }
+  }
+
+
   const goDetail = (teacher) => {
     navigate.push('Order', { teacher })
   };
@@ -72,7 +107,19 @@ export default function ListTeachersPage() {
       <>
         <View style={styles.top}>
         </View>
-        <Title style={styles.title}>List teacher</Title>
+        <View>
+          <Title style={styles.title}>List teacher</Title>
+          <Picker
+              selectedValue={filterSubject}
+              style={{width: '40%', backgroundColor: 'red'}}
+              onValueChange={(itemValue, itemIndex) => handleFilterSubject(itemValue)}
+            >
+              <Picker.Item label="All Subjects" value="" />
+              {allSubjects.map((mapel, index) => {
+                return <Picker.Item key={index} label={mapel} value={mapel} />
+              })}
+          </Picker>
+        </View>
         <ScrollView>
           {teachers.map((teacher) => (
             <TouchableOpacity
@@ -89,14 +136,15 @@ export default function ListTeachersPage() {
                     <Body>
                       <Text>{teacher.name}</Text>
                       <Text note>{teacher.email}</Text>
-                      <Text note>Rp: 100.000</Text>
+                      
                       <Text note>Rp: 100.000</Text>
                     </Body>
                   </Left>
                   <Right>
                     <Body>
-                      <Text note>Rating : {teacher.rating}</Text>
-                      <Text note>Distance : {teacher.position}</Text>
+                      <Text note>4</Text>
+                      <Text note>1</Text>
+                      <Text note>{teacher.subjects.join(", ")}</Text>
                     </Body>
                   </Right>
                 </CardItem>

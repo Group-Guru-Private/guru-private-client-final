@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native'
 import axios from '../config/axiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export default function WebScreen () {
+export default function PaymentPage () {
   const [token, setToken] = useState('')
   const webviewRef = React.useRef(null)
   const navigation = useNavigation()

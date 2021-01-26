@@ -56,7 +56,7 @@ export default function OngoingOrderPage({navigation, route}) {
             <View
                 style={styles.containerbot}
             >
-            <TouchableHighlight style={styles.button} onPress={e => {Alert.alert('Yuk Chat')}}>
+            <TouchableHighlight style={styles.button} onPress={e => {navigate.push('Payment')}}>
               <Text>Chat</Text>
             </TouchableHighlight>
         </View>

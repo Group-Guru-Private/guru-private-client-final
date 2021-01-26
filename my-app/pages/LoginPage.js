@@ -27,7 +27,7 @@ export default function LoginPage() {
   function handleLogin() {
     if (isSelected) {
       axios({
-        url: "http://192.168.1.3:3000/teachers/login",
+        url: "http://192.168.0.100:3000/teachers/login",
         method: "POST",
         data: {
           email: email,
@@ -52,7 +52,7 @@ export default function LoginPage() {
         });
     } else {
       axios({
-        url: "http://192.168.1.3:3000/students/login",
+        url: "http://192.168.0.100:3000/students/login",
         method: "POST",
         data: {
           email: email,
