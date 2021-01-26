@@ -7,7 +7,8 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
-  Switch
+  Switch,
+  Alert
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -31,6 +32,8 @@ import {
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const photo = [
   {
@@ -78,61 +81,125 @@ const photo = [
 ];
 
 export default function HomeTeacherPage() {
-  // const [image, setImage] = useState(null);
-  const [teachers, setTeachers] = useState([]);
-  const navigate = useNavigation();
-  const [isEnabled, setIsEnabled] = useState(true);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const [isEnabled, setIsEnabled] = useState();
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
 
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((data) => setTeachers(data));
+    getDataById()
+
+    axios(({
+      url: 'http://192.168.0.100:3000/orders',
+      method: 'GET'
+    }))
+      .then(async ({data}) => {
+        try {
+          const asyncId = await AsyncStorage.getItem('id')
+          const filteredData = data.filter(el => {
+            return el.TeacherId == asyncId
+          })
+          console.log(filteredData)
+          setOrders(filteredData)
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        Alert.alert(err)
+      })
 
     return function cleanUp() {
       abortController.abort()
     }
   },[])
+  
+  async function toggleSwitch (value) {
+    setIsEnabled(value)
 
-  //     useEffect(() => {
-  //         (async () => {
-  //           if (Platform.OS !== 'web') {
-  //             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //             if (status !== 'granted') {
-  //               alert('Sorry, we need camera roll permissions to make this work!');
-  //             }
-  //           }
-  //         })();
-  //       }, []);
+    try {
+      const access_token = await AsyncStorage.getItem('access_token')
+      
+      axios({
+        url: `http://192.168.0.100:3000/teachers`,
+        method: 'PATCH',
+        headers: {
+          access_token: access_token
+        },
+        data: {
+          status: value
+        }
+      })
+      .then(({data}) => {
+        
+        if(value){
+          Alert.alert(`Working`)
+        }else{
+          Alert.alert(`Off Working`)
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  //     const pickImage = async () => {
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //       allowsEditing: true,
-  //       aspect: [4, 3],
-  //       quality: 1,
-  //     });
+  async function getDataById () {
+    try {
+      const value = await AsyncStorage.getItem('id')
+      
+      axios({
+        url: `http://192.168.0.100:3000/teachers/${value}`,
+        method: 'GET'
+      })
+      .then(({data}) => {
+        setIsEnabled(data.available_status)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //     if (!result.cancelled) {
-  //       setImage(result.uri);
-  //     }
-  //   };
   const goDetail = ({item}) => {
     return (
-      <View style={{
-        height: 250,
-        padding:10,
-        justifyContent: 'center',
-        backgroundColor: 'floralwhite',
-        borderRadius:20
-      }}>
-        <Text style={{fontSize: 20}}>{item.title}</Text>
+      <TouchableOpacity onPress={() => console.log('oke')}>
+      <View
+        style={{
+          height: 250,
+          padding: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "floralwhite",
+          borderRadius: 20,
+        }}
+      >
+        <Text style={{left: "-30%", top: "-20%", fontSize: 20, fontWeight: 'bold'}}>Ongoing Order</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Image
+            source={{
+              uri: "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg",
+            }}
+            style={styles.profileImg}
+          />
+          <View>
+            <Text style={{ fontSize: 13 }}>Name: {item.Student.name}</Text>
+            <Text style={{ fontSize: 13 }}>Subject: {item.subject}</Text>
+            <Text style={{ fontSize: 13 }}>Address: {item.Student.address}</Text>
+            <Text style={{ fontSize: 13 }}>Date: {new Date(item.date).toLocaleDateString()}</Text>
+          </View>
+        </View>
       </View>
+      </TouchableOpacity>
     )
   };
+  
   const goSquare = ({item}) => {
     return (
       <View style={{
@@ -160,19 +227,18 @@ export default function HomeTeacherPage() {
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
+          onValueChange={value => {toggleSwitch(value)}}
           value={isEnabled}
         />
       </View>
       <Text style={{ fontSize: 20, color: 'white', marginLeft: '6%' }}>Pak Agus</Text>
       <View style={{flex:1, flexDirection: 'row', justifyContent: "center", marginTop: '5%'}}>
-      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={350} renderItem={goDetail}></Carousel>
+        <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={orders} itemWidth={350} renderItem={goDetail}></Carousel>
       </View>
       <Text style={{ fontSize: 26, color: "#48bcae", marginLeft: '5%', top: '5%' }}>List Students</Text>
       <View style={{flex:1, flexDirection: 'row', marginLeft: '-20%', marginTop: '15%',}}>
-      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={200} renderItem={goSquare  }></Carousel>
+      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={200} renderItem={goSquare}></Carousel>
       </View>
-    
    </SafeAreaView>
   );
 }
@@ -217,4 +283,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
   },
+  profileImg: {
+    width: 100,
+    height: 100,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+    borderWidth: 3,
+    borderColor: "red"
+  }
 });
