@@ -60,7 +60,7 @@ export default function ListTeachersPage() {
     })
     .then(({data}) => {
       const filteredData = data.filter(el => {
-        return el.available_status == false
+        return el.available_status == true
       })
       setTeachers(filteredData)
       setAllTeachers(filteredData)

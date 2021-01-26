@@ -11,6 +11,7 @@ import {
   Alert,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
@@ -142,6 +143,7 @@ export default function RegisterPage() {
   // if (position.latitude !== null) {
   if (inputData.role === "teacher") {
     return (
+    <SafeAreaView>
       <LinearGradient
         // Background Linear Gradient
         colors={["#008bb5", "#48bcae"]}
@@ -251,7 +253,6 @@ export default function RegisterPage() {
               />
             </View>
           </ScrollView>
-
           <TouchableHighlight
             style={[styles.button, styles.test]}
             onPress={register}
@@ -260,6 +261,7 @@ export default function RegisterPage() {
           </TouchableHighlight>
         </View>
       </LinearGradient>
+      </SafeAreaView>
     );
   } else {
     return (
@@ -269,6 +271,7 @@ export default function RegisterPage() {
         style={{ height: "100%" }}
       >
         {/* <MapView 
+                <SafeAreaView>
                 provider={PROVIDER_GOOGLE}
                 style={{ flex: 1 }}
                 showsUserLocation
