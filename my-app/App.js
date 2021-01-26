@@ -23,9 +23,9 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Landing" component={LandingPage} />
-          <Stack.Screen name="Register" component={RegisterPage} />
-          <Stack.Screen name="Login" component={LoginPage} />
+          <Stack.Screen name="Landing" options={{headerTransparent: true, title: null}} component={LandingPage} />
+          <Stack.Screen name="Register" options={{headerTransparent: true, title: null}} component={RegisterPage} />
+          <Stack.Screen name="Login" options={{headerTransparent: true, title: null}} component={LoginPage} />
           <Stack.Screen name="Order"  options={{headerTransparent: true, title: null}}  component={OrderPage} />
           <Stack.Screen name="OngoingOrder" component={OngoingOrderPage} />
           <Stack.Screen name="BottomNav" options={{headerTransparent: true, title: null}} component={BottomNav}/>
