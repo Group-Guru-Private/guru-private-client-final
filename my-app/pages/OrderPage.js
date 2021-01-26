@@ -116,7 +116,7 @@ export default function OrderPage({ navigation, route }) {
             <Text style={styles.text2}>{teacher.email}</Text>
             <View style={{ flexDirection: "row", marginTop: "5%" }}>
               <MaterialCommunityIcons name="map-marker" size={13} color="white">
-                <Text style={styles.text3}>{dataTeacher.distance} km</Text>
+                <Text style={styles.text3}>{teacher.address}</Text>
               </MaterialCommunityIcons>
               <MaterialCommunityIcons
                 name="star"
@@ -124,7 +124,7 @@ export default function OrderPage({ navigation, route }) {
                 color="white"
                 style={{ paddingLeft: "10%" }}
               >
-                <Text style={styles.text3}>{dataTeacher.rating}</Text>
+                <Text style={styles.text3}>{teacher.rating}</Text>
               </MaterialCommunityIcons>
             </View>
           </View>
@@ -213,13 +213,13 @@ export default function OrderPage({ navigation, route }) {
         </Text>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ left: "-300%", color: "#008bb5" }}>Course Price</Text>
-          <Text style={{ left: "300%", color: "#008bb5" }}>Rp.100.000</Text>
+          <Text style={{ left: "300%", color: "#008bb5" }}> Rp.{teacher.price}</Text>
         </View>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ left: "-265%", color: "#008bb5" }}>
             Distance Price
           </Text>
-          <Text style={{ left: "275%", color: "#008bb5" }}>Rp.100.000</Text>
+        <Text style={{ left: "275%", color: "#008bb5" }}>Rp.{dataTeacher.distancePrice}</Text>
         </View>
         <Text style={{left: '27%', color: "#008bb5"}}>
           ---------------------- +
@@ -228,7 +228,7 @@ export default function OrderPage({ navigation, route }) {
           <Text style={{ left: "-335%", color: "#008bb5" }}>
             Total Price
           </Text>
-          <Text style={{ left: "335%", color: "#008bb5" }}>Rp.200.000</Text>
+          <Text style={{ left: "335%", color: "#008bb5" }}>Rp.{teacher.price + dataTeacher.distancePrice}</Text>
         </View>
         <TouchableHighlight
           style={styles.button}

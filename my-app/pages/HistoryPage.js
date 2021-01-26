@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     // top: "-5%",
     width: "100%",
     height: "35%",
-    backgroundColor: "#48bcae",
+    backgroundColor: "#008bb5",
     borderBottomRightRadius: 25,
     borderBottomLeftRadius: 25,
     position: "absolute",
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     marginLeft: "5%",
     textAlign: "left",
     fontSize: 32,
-    fontWeight: "500",
+    fontWeight: "bold",
     color: "white",
   },
   card: {

@@ -49,11 +49,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <LinearGradient
-      // Background Linear Gradient
-      colors={["#008bb5", "#48bcae"]}
-      style={{ height: "100%" }}
-    >
+    // <LinearGradient
+    //   // Background Linear Gradient
+    //   colors={["#008bb5", "#48bcae"]}
+    //   style={{ height: "100%" }}
+    // >
+      <>
       <View style={styles.top}></View>
       <View
         style={{
@@ -95,18 +96,9 @@ export default function ProfilePage() {
           </View>
         </View>
         <Button title="Pick an image from camera roll" onPress={pickImage} />
-        {/* <View>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={(e) => {
-              navigate.replace("Landing");
-            }}
-          >
-            <Text>LOGOUT</Text>
-          </TouchableHighlight>
-        </View> */}
       </View>
-    </LinearGradient>
+      </>
+    
   );
 }
 
@@ -143,7 +135,7 @@ const styles = StyleSheet.create({
     marginLeft: "5%",
     textAlign: "left",
     fontSize: 32,
-    fontWeight: "500",
+    fontWeight: "bold",
     color: "white",
   },
   icon: {
@@ -153,7 +145,7 @@ const styles = StyleSheet.create({
   top: {
     width: "100%",
     height: "35%",
-    backgroundColor: "rgba(127,125,120, 0.9)",
+    backgroundColor: "#008bb5",
     borderBottomRightRadius: 25,
     borderBottomLeftRadius: 25,
     position: "absolute",
