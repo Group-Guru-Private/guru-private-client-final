@@ -8,7 +8,7 @@ import {
   ScrollView,
   Dimensions,
   Switch,
-  Alert
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -32,8 +32,8 @@ import {
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
-import axios from 'axios'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from "../config/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const photo = [
   {
@@ -85,161 +85,205 @@ export default function HomeTeacherPage() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const abortController = new AbortController()
-    const signal = abortController.signal
+    const abortController = new AbortController();
+    const signal = abortController.signal;
 
-    getDataById()
+    getDataById();
 
-    axios(({
-      url: 'http://192.168.0.100:3000/orders',
-      method: 'GET'
-    }))
-      .then(async ({data}) => {
+    axios
+      .get("/orders")
+      .then(async ({ data }) => {
         try {
-          const asyncId = await AsyncStorage.getItem('id')
-          const filteredData = data.filter(el => {
-            return el.TeacherId == asyncId
-          })
-          console.log(filteredData)
-          setOrders(filteredData)
+          const asyncId = await AsyncStorage.getItem("id");
+          const filteredData = data.filter((el) => {
+            return el.TeacherId == asyncId;
+          });
+          console.log(filteredData);
+          setOrders(filteredData);
         } catch (error) {
           console.log(error);
         }
       })
-      .catch(err => {
-        console.log(err)
-        Alert.alert(err)
-      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert(err);
+      });
 
     return function cleanUp() {
-      abortController.abort()
-    }
-  },[])
-  
-  async function toggleSwitch (value) {
-    setIsEnabled(value)
+      abortController.abort();
+    };
+  }, []);
+
+  async function toggleSwitch(value) {
+    setIsEnabled(value);
 
     try {
-      const access_token = await AsyncStorage.getItem('access_token')
-      
+      const access_token = await AsyncStorage.getItem("access_token");
+
       axios({
         url: `http://192.168.0.100:3000/teachers`,
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          access_token: access_token
+          access_token: access_token,
         },
         data: {
-          status: value
-        }
+          status: value,
+        },
       })
-      .then(({data}) => {
-        
-        if(value){
-          Alert.alert(`Working`)
-        }else{
-          Alert.alert(`Off Working`)
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  async function getDataById () {
-    try {
-      const value = await AsyncStorage.getItem('id')
-      
-      axios({
-        url: `http://192.168.0.100:3000/teachers/${value}`,
-        method: 'GET'
-      })
-      .then(({data}) => {
-        setIsEnabled(data.available_status)
-      })
-      .catch(err => {
-        console.log(err);
-      })
+        .then(({ data }) => {
+          if (value) {
+            Alert.alert(`Working`);
+          } else {
+            Alert.alert(`Off Working`);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } catch (error) {
       console.log(error);
     }
   }
 
-  const goDetail = ({item}) => {
+  async function getDataById() {
+    try {
+      const value = await AsyncStorage.getItem("id");
+
+      axios
+        .get(`/teachers/${value}`)
+        .then(({ data }) => {
+          setIsEnabled(data.available_status);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const goDetail = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => console.log('oke')}>
+      <TouchableOpacity onPress={() => console.log("oke")}>
+        <View
+          style={{
+            height: 250,
+            padding: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "floralwhite",
+            borderRadius: 20,
+          }}
+        >
+          <Text
+            style={{
+              left: "-30%",
+              top: "-20%",
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            Ongoing Order
+          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Image
+              source={{
+                uri:
+                  "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg",
+              }}
+              style={styles.profileImg}
+            />
+            <View>
+              <Text style={{ fontSize: 13 }}>Name: {item.Student.name}</Text>
+              <Text style={{ fontSize: 13 }}>Subject: {item.subject}</Text>
+              <Text style={{ fontSize: 13 }}>
+                Address: {item.Student.address}
+              </Text>
+              <Text style={{ fontSize: 13 }}>
+                Date: {new Date(item.date).toLocaleDateString()}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const goSquare = ({ item }) => {
+    return (
       <View
         style={{
-          height: 250,
+          height: 150,
           padding: 10,
-          alignItems: "center",
           justifyContent: "center",
           backgroundColor: "floralwhite",
           borderRadius: 20,
         }}
       >
-        <Text style={{left: "-30%", top: "-20%", fontSize: 20, fontWeight: 'bold'}}>Ongoing Order</Text>
-        <View style={{flexDirection: 'row'}}>
-          <Image
-            source={{
-              uri: "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg",
-            }}
-            style={styles.profileImg}
-          />
-          <View>
-            <Text style={{ fontSize: 13 }}>Name: {item.Student.name}</Text>
-            <Text style={{ fontSize: 13 }}>Subject: {item.subject}</Text>
-            <Text style={{ fontSize: 13 }}>Address: {item.Student.address}</Text>
-            <Text style={{ fontSize: 13 }}>Date: {new Date(item.date).toLocaleDateString()}</Text>
-          </View>
-        </View>
+        <Text style={{ fontSize: 20 }}>{item.title}</Text>
       </View>
-      </TouchableOpacity>
-    )
-  };
-  
-  const goSquare = ({item}) => {
-    return (
-      <View style={{
-        height: 150,
-        padding:10,
-        justifyContent: 'center',
-        backgroundColor: 'floralwhite',
-        borderRadius:20
-      }}>
-        <Text style={{fontSize: 20}}>{item.title}</Text>
-      </View>
-    )
+    );
   };
 
-  const SLIDER_WIDTH = Dimensions.get('window').width
+  const SLIDER_WIDTH = Dimensions.get("window").width;
 
   return (
     <SafeAreaView style={styles.container}>
-
       <View style={styles.top}></View>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Title style={styles.title}>Hello!</Title>
         <Switch
-          style={{right: "10%", top: "5%"}}
+          style={{ right: "10%", top: "5%" }}
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={value => {toggleSwitch(value)}}
+          onValueChange={(value) => {
+            toggleSwitch(value);
+          }}
           value={isEnabled}
         />
       </View>
-      <Text style={{ fontSize: 20, color: 'white', marginLeft: '6%' }}>Pak Agus</Text>
-      <View style={{flex:1, flexDirection: 'row', justifyContent: "center", marginTop: '5%'}}>
-        <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={orders} itemWidth={350} renderItem={goDetail}></Carousel>
+      <Text style={{ fontSize: 20, color: "white", marginLeft: "6%" }}>
+        Pak Agus
+      </Text>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: "5%",
+        }}
+      >
+        <Carousel
+          layout={"default"}
+          sliderWidth={SLIDER_WIDTH}
+          data={orders}
+          itemWidth={350}
+          renderItem={goDetail}
+        ></Carousel>
       </View>
-      <Text style={{ fontSize: 26, color: "#48bcae", marginLeft: '5%', top: '5%' }}>List Students</Text>
-      <View style={{flex:1, flexDirection: 'row', marginLeft: '-20%', marginTop: '15%',}}>
-      <Carousel layout={'default'} sliderWidth={SLIDER_WIDTH} data={photo} itemWidth={200} renderItem={goSquare}></Carousel>
+      <Text
+        style={{ fontSize: 26, color: "#48bcae", marginLeft: "5%", top: "5%" }}
+      >
+        List Students
+      </Text>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          marginLeft: "-20%",
+          marginTop: "15%",
+        }}
+      >
+        <Carousel
+          layout={"default"}
+          sliderWidth={SLIDER_WIDTH}
+          data={photo}
+          itemWidth={200}
+          renderItem={goSquare}
+        ></Carousel>
       </View>
-   </SafeAreaView>
+    </SafeAreaView>
   );
 }
 
@@ -289,6 +333,6 @@ const styles = StyleSheet.create({
     borderRadius: 150 / 2,
     overflow: "hidden",
     borderWidth: 3,
-    borderColor: "red"
-  }
+    borderColor: "red",
+  },
 });
