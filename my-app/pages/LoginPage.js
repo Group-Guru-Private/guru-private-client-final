@@ -14,7 +14,7 @@ import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import CheckBox from "@react-native-community/checkbox";
-import axios from "axios";
+import axios from "../config/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
@@ -26,14 +26,11 @@ export default function LoginPage() {
 
   function handleLogin() {
     if (isSelected) {
-      axios({
-        url: "http://192.168.0.100:3000/teachers/login",
-        method: "POST",
-        data: {
+      axios
+        .post("/teachers/login", {
           email: email,
           password: password,
-        },
-      })
+        })
         .then(async ({ data }) => {
           console.log(data);
           try {
@@ -51,16 +48,13 @@ export default function LoginPage() {
           Alert.alert("Invalid Email or Password");
         });
     } else {
-      axios({
-        url: "http://192.168.0.100:3000/students/login",
-        method: "POST",
-        data: {
+      axios
+        .post("/students/login", {
           email: email,
           password: password,
-        },
-      })
+        })
         .then(async ({ data }) => {
-          console.log(data, 'ini data login cuk')
+          console.log(data, "ini data login cuk");
           try {
             await AsyncStorage.setItem("access_token", data.access_token);
             await AsyncStorage.setItem("id", data.id.toString());
