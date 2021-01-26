@@ -23,6 +23,9 @@ export default function ProfilePage() {
   const navigate = useNavigation();
 
   useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
     (async () => {
       if (Platform.OS !== "web") {
         const {
@@ -33,6 +36,10 @@ export default function ProfilePage() {
         }
       }
     })();
+
+    return function cleanUp() {
+      abortController.abort();
+    };
   }, []);
 
   const pickImage = async () => {
