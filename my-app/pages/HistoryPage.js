@@ -27,15 +27,38 @@ import {
   Title
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
+import axios from '../config/axiosInstance'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function HomePage() {
   // const [image, setImage] = useState(null);
-  const [teachers, setTeachers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const navigate = useNavigation();
 
-  fetch("https://jsonplaceholder.typicode.com/users")
-    .then((res) => res.json())
-    .then((data) => setTeachers(data));
+  useEffect(() => {
+    
+    axios({
+      url: '/orders',
+      method: 'GET'
+    })
+    .then(async ({ data }) => {
+      try {
+        const asyncId = await AsyncStorage.getItem("id");
+        const filteredData = data.filter((el) => {
+          return el.StudentId == asyncId && el.status == true;
+        });
+        const sorted = filteredData.sort((a, b) => new Date(b.date) - new Date(a.date))
+        setOrders(sorted)
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      Alert.alert(err);
+    });
+    
+  }, [])
 
   const goDetail = (id) => {
     console.log(id);
@@ -46,12 +69,12 @@ export default function HomePage() {
       <View style={styles.top}></View>
       <Text style={styles.title}>History</Text>
       <ScrollView>
-        {teachers.map((teacher) => (
+        {orders.map(data => (
           <TouchableOpacity
             onPress={() => {
-              goDetail(teacher.id);
+              goDetail(data.id);
             }}
-            key={teacher.id}
+            key={data.id}
             style={styles.card}
           >
             <Card style={{ borderRadius: 20 }}>
@@ -59,8 +82,10 @@ export default function HomePage() {
                 <Left>
                   <Thumbnail />
                   <Body>
-                    <Text>{teacher.name}</Text>
-                    <Text note>{teacher.email}</Text>
+                    <Text>{data.Teacher.name}</Text>
+                    <Text note>{data.Teacher.email}</Text>
+                    <Text note>{data.subject}</Text>
+                    <Text note>{data.date}</Text>
                   </Body>
                 </Left>
               </CardItem>

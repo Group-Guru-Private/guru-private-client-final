@@ -14,14 +14,14 @@ import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import axios from "../config/axiosInstance";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 
 export default function OrderPage({ navigation, route }) {
-  const { teacher } = route.params;
+  const { teacher, distance } = route.params;
   const [subject, setSubject] = useState(teacher.subjects[0]);
-  const listSubjects = ["Biology", "Mathematics", "English", "Programming"];
+  const listSubjectss = ["Biology", "Mathematics", "English", "Programming"];
   const navigate = useNavigation();
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
@@ -61,12 +61,12 @@ export default function OrderPage({ navigation, route }) {
       const value = await AsyncStorage.getItem("access_token");
       if (value !== null) {
         axios({
-          url: `http://192.168.0.100:3000/orders/${teacher.id}`,
+          url: `/orders/${teacher.id}`,
           method: "POST",
           data: {
             subject: subject,
-            date: date,
-            distance: 20,
+            date: date.toISOString().split('T')[0],
+            distance: 10,
           },
           headers: {
             access_token: value,
@@ -74,7 +74,10 @@ export default function OrderPage({ navigation, route }) {
         })
           .then(({ data }) => {
             Alert.alert(`Order Success`);
-            navigate.replace("BottomNav");
+            navigate.reset({
+              index: 0,
+              routes: [{ name: 'BottomNav' }],
+            });
           })
           .catch((err) => {
             console.log(err);
@@ -86,6 +89,24 @@ export default function OrderPage({ navigation, route }) {
     }
   };
   
+  function countDistance () {
+    if(distance < 1){
+      return 3000
+    }
+    else if(distance >= 1 && distance < 3){
+      return 5000
+    }
+    else if(distance >= 3 && distance < 6){
+      return 7000
+    }
+    else if(distance >= 6 && distance < 10){
+      return 12000
+    }
+    else {
+      return 15000
+    }
+  }
+
   return (
     <LinearGradient
       // Background Linear Gradient
@@ -216,10 +237,10 @@ export default function OrderPage({ navigation, route }) {
           <Text style={{ left: "300%", color: "#008bb5" }}> Rp.{teacher.price}</Text>
         </View>
         <View style={{ flexDirection: "row" }}>
-          <Text style={{ left: "-265%", color: "#008bb5" }}>
+          <Text style={{ left: "-320%", color: "#008bb5" }}>
             Distance Price
           </Text>
-        <Text style={{ left: "275%", color: "#008bb5" }}>Rp.{dataTeacher.distancePrice}</Text>
+        <Text style={{ left: "275%", color: "#008bb5" }}>Rp.{countDistance()}</Text>
         </View>
         <Text style={{left: '27%', color: "#008bb5"}}>
           ---------------------- +
@@ -228,7 +249,7 @@ export default function OrderPage({ navigation, route }) {
           <Text style={{ left: "-335%", color: "#008bb5" }}>
             Total Price
           </Text>
-          <Text style={{ left: "335%", color: "#008bb5" }}>Rp.{teacher.price + dataTeacher.distancePrice}</Text>
+          <Text style={{ left: "335%", color: "#008bb5" }}>Rp.{teacher.price + countDistance()}</Text>
         </View>
         <TouchableHighlight
           style={styles.button}

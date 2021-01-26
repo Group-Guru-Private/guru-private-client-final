@@ -53,12 +53,12 @@ export default function HomePage() {
     const signal = abortController.signal;
     getName()
     axios
-      .get("orders/")
+      .get("/orders")
       .then(async ({ data }) => {
         try {
           const asyncId = await AsyncStorage.getItem("id");
           const filteredData = data.filter((el) => {
-            return el.StudentId == asyncId;
+            return el.StudentId == asyncId && el.status == false;
           });
           setOrders(filteredData);
         } catch (error) {
@@ -94,6 +94,7 @@ export default function HomePage() {
           navigate.push("OngoingOrder", {
             teacher: item.Teacher,
             subject: item.subject,
+            orderId: item.id
           })
         }
       >
