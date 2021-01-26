@@ -5,7 +5,7 @@ import {
   View,
   Image,
   TouchableHighlight,
-  Button
+  Button,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -63,23 +63,29 @@ export default function ProfilePage() {
         }}
       >
         <Text style={styles.title}>Profile</Text>
-        <MaterialCommunityIcons
-          style={styles.icon}
-          name="logout"
-          color="white"
-          size={26}
-          onPress={(e) => {
-            navigate.replace("Landing");
-          }}
-        ></MaterialCommunityIcons>
+        <TouchableHighlight style={{marginTop: Constants.statusBarHeight,  right: '2%'}}>
+          <MaterialCommunityIcons
+            style={styles.icon}
+            name="logout"
+            color="white"
+            size={28}
+            onPress={(e) => {
+              navigate.replace("Landing");
+            }} 
+          ></MaterialCommunityIcons>
+        </TouchableHighlight>
       </View>
       <View style={styles.container}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Image
-            source={image? {uri: image} : {
-              uri:
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            }}
+            source={
+              image
+                ? { uri: image }
+                : {
+                    uri:
+                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                  }
+            }
             style={styles.profileImg}
           />
           <View style={{ justifyContent: "center", marginRight: "28%" }}>
@@ -141,7 +147,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   icon: {
-    marginTop: "10%",
+    marginTop: Constants.statusBarHeight,
     marginRight: "3%",
   },
   top: {

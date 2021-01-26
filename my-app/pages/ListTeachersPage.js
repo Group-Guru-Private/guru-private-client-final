@@ -40,12 +40,12 @@ export default function ListTeachersPage() {
   useEffect(() => {
     setLoading(true)
     axios({
-      url: 'http://192.168.0.100:3000/teachers',
+      url: 'http://192.168.1.3:3000/teachers',
       method: 'GET'
     })
     .then(({data}) => {
       const filteredData = data.filter(el => {
-        return el.available_status == true
+        return el.available_status == false
       })
       setTeachers(filteredData)
       setLoading(false)
@@ -60,7 +60,11 @@ export default function ListTeachersPage() {
     navigate.push('Order', { teacher })
   };
 
-  if(loading) return <Text>Loading...</Text>
+  if(loading) return (
+    <View style={{marginTop: Constants.statusBarHeight}}> 
+      <Text style={{ textAlign: 'center'}}>Loading...</Text>
+    </View>
+  )
 
   else {
     return (
