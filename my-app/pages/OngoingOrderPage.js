@@ -5,12 +5,11 @@ import { Picker } from '@react-native-picker/picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native'
 
 export default function OngoingOrderPage({navigation, route}) {
-    const { teacher, subject } = route.params
+    const { teacher, subject, orderId } = route.params
     const navigate = useNavigation()
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
@@ -56,7 +55,7 @@ export default function OngoingOrderPage({navigation, route}) {
             <View
                 style={styles.containerbot}
             >
-            <TouchableHighlight style={styles.button} onPress={e => {navigate.push('Payment')}}>
+            <TouchableHighlight style={styles.button} onPress={e => {navigate.push('Payment', { orderId: orderId })}}>
               <Text>Chat</Text>
             </TouchableHighlight>
         </View>
