@@ -31,187 +31,193 @@ import {
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
-import axios from 'axios'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
-const photo = [
-  {
-    albumId: 1,
-    id: 1,
-    name: "Zaidan ammar",
-    distance: 2,
-    rating: 2,
-    price: 8676876,
-    url: "https://via.placeholder.com/600/92c952",
-    thumbnailUrl: "https://via.placeholder.com/150/92c952",
-  },
-  {
-    albumId: 1,
-    id: 2,
-    rating: 3,
-    name: "farhat 3",
-    distance: 2.3,
-    price: 100000,
-    url:
-      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
-    thumbnailUrl: "https://via.placeholder.com/150/771796",
-  },
-  {
-    albumId: 1,
-    id: 3,
-    rating: 1,
-    name: "farhat 2",
-    distance: 2.9,
-    price: 100000,
-    url:
-      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
-    thumbnailUrl: "https://via.placeholder.com/150/24f355",
-  },
-  {
-    albumId: 1,
-    id: 4,
-    rating: 5,
-    name: "farhat 1",
-    distance: 4.3,
-    price: 100000,
-    url:
-      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
-    thumbnailUrl: "https://via.placeholder.com/150/d32776",
-  },
-  {
-    albumId: 1,
-    id: 5,
-    name: "farhat 4",
-    distance: 1.3,
-    rating: 4,
-    price: 100000,
-    url:
-      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
-    thumbnailUrl: "https://via.placeholder.com/150/f66b97",
-  },
-  {
-    albumId: 1,
-    id: 6,
-    name: "farhat 5",
-    distance: 8.3,
-    rating: 3,
-    price: 100000,
-    url:
-      "https://i7.pngguru.com/preview/555/703/598/computer-icons-avatar-woman-user-avatar.jpg",
-    thumbnailUrl: "https://via.placeholder.com/150/56a8c2",
-  },
-];
-const sort  = photo.filter(el => el.rating > 3)
-
+import axios from "../config/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 // var angka = 13531153
 // var locale = angka.toLocaleString('en-US', { style: 'currency', currency: 'JPY' })
 // console.log(angka, '<<<<<<')
 // console.log(locale, '<<<')
 
-
 export default function HomePage() {
-  // const [image, setImage] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [topTeachers, setTopTeachers] = useState([]);
+  const [name, setName] = useState("");
   const navigate = useNavigation();
   const SLIDER_WIDTH = Dimensions.get("window").width;
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-
-    axios(({
-      url: 'http://192.168.0.100:3000/orders/',
-      method: 'GET'
-    }))
-      .then(async ({data}) => {
+    getName()
+    axios
+      .get("orders/")
+      .then(async ({ data }) => {
         try {
-          const asyncId = await AsyncStorage.getItem('id')
-          const filteredData = data.filter(el => {
-            return el.StudentId == asyncId
-          })
-          console.log(filteredData)
-          setOrders(filteredData)
+          const asyncId = await AsyncStorage.getItem("id");
+          const filteredData = data.filter((el) => {
+            return el.StudentId == asyncId;
+          });
+          setOrders(filteredData);
         } catch (error) {
           console.log(error);
         }
       })
-      .catch(err => {
-        console.log(err)
-        Alert.alert(err)
-      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert(err);
+      });
 
     return function cleanUp() {
       abortController.abort();
     };
   }, []);
 
+  useEffect(() => {
+    axios
+      .get("/teachers")
+      .then(({ data }) => {
+        const filterData = data
+          .filter((el) => el.rating > 3)
+          .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+        setTopTeachers(filterData);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const goDetail = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => navigate.push('OngoingOrder', { teacher: item.Teacher, subject: item.subject })}>
-      <View
-        style={{
-          height: 250,
-          padding: 10,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "floralwhite",
-          borderRadius: 20,
-        }}
+      <TouchableOpacity
+        onPress={() =>
+          navigate.push("OngoingOrder", {
+            teacher: item.Teacher,
+            subject: item.subject,
+          })
+        }
       >
-        <Text style={{left: "-35%", top: "-20%", fontSize: 20, fontWeight: 'bold'}}>Ongoing</Text>
-        <View style={{flexDirection: 'row'}}>
-          <Image
-            source={{
-              uri: item.Teacher.image_url,
+        <View
+          style={{
+            height: 250,
+            paddingHorizontal: 10,
+            alignItems: "center",
+            justifyContent: "flex-start",
+            backgroundColor: "floralwhite",
+            borderRadius: 20,
+          }}
+        >
+          <Text
+            style={{
+              left: "-25%",
+              marginVertical: "5%",
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "#008bb5",
             }}
-            style={styles.profileImg}
-          />
-          <View>
-            <Text style={{ fontSize: 13 }}>Name: {item.Teacher.name}</Text>
-            <Text style={{ fontSize: 13 }}>Subject: {item.subject}</Text>
-            <Text style={{ fontSize: 13 }}>Address: {item.Teacher.address}</Text>
-            <Text style={{ fontSize: 13 }}>Date: {new Date(item.date).toLocaleDateString()}</Text>
+          >
+            Ongoing Course
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-start",
+              marginLeft: "2%",
+            }}
+          >
+            <Image
+              source={{
+                uri: item.Teacher.image_url,
+              }}
+              style={styles.profileImg}
+            />
+            <View style={{ marginLeft: "4%", alignSelf: "center" }}>
+              <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                {item.Teacher.name}
+              </Text>
+              <Text style={{ fontSize: 13 }}>{item.subject}</Text>
+              <Text style={{ fontSize: 13 }}>{item.Teacher.address}</Text>
+              <Text style={{ fontSize: 13 }}>
+                {new Date(item.date).toLocaleDateString()}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
       </TouchableOpacity>
     );
   };
-  const goSquare = ({ item }) => {
+  const goSquare = ({ item, index }) => {
     return (
       <TouchableOpacity onPress={() => goOrder(item)}>
         <View
           style={{
             height: 150,
             padding: 10,
-            justifyContent: "center",
+            // justifyContent: "center",
+            // alignContent: 'center',
             backgroundColor: "floralwhite",
             borderRadius: 20,
-            flexDirection: "row",
+            // flexDirection: "row",
             alignItems: "center",
           }}
         >
-          <Image
-            source={{
-              uri:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmpoQaaw13BKAmYv1iRPzkz9AkM0ZskCqK_g&usqp=CAU",
+          {index === 0 || index === 1 || index === 2 ? (
+            <MaterialCommunityIcons
+              name="trophy"
+              size={24}
+              color='#008bb5'
+              style={{ alignSelf: "flex-start"}}
+            ></MaterialCommunityIcons>
+          ) : null}
+          <View
+            style={{
+              flexDirection: "row",
+              marginLeft: "-3%",
+              marginTop: "10%",
             }}
-            style={{ width: 70, height: 70 }}
-          ></Image>
-          <View>
-            <Text style={{ fontSize: 14, marginLeft: "7%" }}>{item.name}</Text>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text style={{ fontSize: 10, marginLeft: "10%" }}>
-                R: {item.rating}
+          >
+            <Image
+              source={{
+                uri: item.image_url,
+              }}
+              style={styles.profileImg1}
+            ></Image>
+            <View style={{ alignSelf: "center" }}>
+              <Text
+                style={{ fontSize: 14, marginLeft: "7%", fontWeight: "bold" }}
+              >
+                {item.name}
               </Text>
-              <Text style={{ fontSize: 10, marginRight: "30%" }}>
-                D: {item.distance}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginLeft: "7%",
+                    marginTop: "2%",
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="star"
+                    size={14}
+                  ></MaterialCommunityIcons>
+                  <Text style={{ fontSize: 10, marginLeft: "10%" }}>
+                    {item.rating}
+                  </Text>
+                </View>
+                <View style={{ flexDirection: "row", marginLeft: "7%" }}>
+                  <MaterialIcons name="attach-money" size={14}></MaterialIcons>
+                  <Text style={{ fontSize: 10 }}>{item.price}</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 10, marginLeft: "8%", marginTop: "2%" }}>
+                {item.address}
               </Text>
             </View>
-            <Text style={{ fontSize: 10, marginLeft: "7%" }}>{item.price}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -219,8 +225,17 @@ export default function HomePage() {
   };
 
   const goOrder = (teacher) => {
-    navigate.replace('Order', {teacher})
-    console.log(teacher)
+    navigate.replace("Order", { teacher });
+    console.log(teacher);
+  };
+
+  const getName = async () => {
+    try {
+      const nameStudent = await AsyncStorage.getItem("name");
+      return setName(nameStudent)
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -229,7 +244,7 @@ export default function HomePage() {
       <View style={styles.top}></View>
       <Title style={styles.title}>Hello!</Title>
       <Text style={{ fontSize: 20, color: "white", marginLeft: "6%" }}>
-        Zaidan Ammar
+        {name}
       </Text>
       <View
         style={{
@@ -248,9 +263,15 @@ export default function HomePage() {
         ></Carousel>
       </View>
       <Text
-        style={{ fontSize: 26, color: "#48bcae", marginLeft: "5%", top: "5%" }}
+        style={{
+          fontSize: 26,
+          fontWeight: "bold",
+          color: "#008bb5",
+          marginLeft: "5%",
+          top: "5%",
+        }}
       >
-        Top teacher on the week
+        Top teachers
       </Text>
       <View
         style={{
@@ -263,9 +284,10 @@ export default function HomePage() {
         <Carousel
           layout={"default"}
           sliderWidth={SLIDER_WIDTH}
-          data={sort}
+          data={topTeachers}
           itemWidth={200}
           renderItem={goSquare}
+          firstItem={0}
         ></Carousel>
       </View>
     </>
@@ -281,7 +303,7 @@ const styles = StyleSheet.create({
   top: {
     width: "100%",
     height: "35%",
-    backgroundColor: "#48bcae",
+    backgroundColor: "#008bb5",
     borderBottomRightRadius: 25,
     borderBottomLeftRadius: 25,
     position: "absolute",
@@ -289,11 +311,11 @@ const styles = StyleSheet.create({
   title: {
     // flex: 1,
     marginTop: "10%",
-    marginBottom: "2%",
+    // marginBottom: "2%",
     marginLeft: "5%",
     textAlign: "left",
     fontSize: 32,
-    fontWeight: "500",
+    fontWeight: "bold",
     color: "white",
   },
   card: {
@@ -318,8 +340,11 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 150 / 2,
     overflow: "hidden",
-    borderWidth: 3,
-    borderColor: "red"
-  }
+  },
+  profileImg1: {
+    width: 70,
+    height: 70,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+  },
 });
-

@@ -60,10 +60,11 @@ export default function LoginPage() {
         },
       })
         .then(async ({ data }) => {
-          console.log(data);
+          console.log(data, 'ini data login cuk')
           try {
             await AsyncStorage.setItem("access_token", data.access_token);
             await AsyncStorage.setItem("id", data.id.toString());
+            await AsyncStorage.setItem("name", data.name);
             navigate.replace("BottomNav");
           } catch (err) {
             // saving error
@@ -114,13 +115,22 @@ export default function LoginPage() {
           onChangeText={(text) => setPassword(text)}
           value={password}
         />
-        <View style={{flexDirection: 'row', alignSelf: 'flex-start', marginTop: '4%', left: '13%'}}>
-                <CheckBox
-                    value={isSelected}
-                    onValueChange={(newValue) => setSelection(newValue)}
-                    />
-                <Text style={{padding: '1%', color: "floralwhite"}}>I'm a teacher</Text>
-              </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignSelf: "flex-start",
+            marginTop: "4%",
+            left: "13%",
+          }}
+        >
+          <CheckBox
+            value={isSelected}
+            onValueChange={(newValue) => setSelection(newValue)}
+          />
+          <Text style={{ padding: "1%", color: "floralwhite" }}>
+            I'm a teacher
+          </Text>
+        </View>
       </View>
       <View style={styles.containerbot}>
         <TouchableHighlight style={styles.button} onPress={handleLogin}>
