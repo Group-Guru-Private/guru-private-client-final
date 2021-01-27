@@ -71,9 +71,39 @@ export default function ProfilePage() {
     });
 
     if (!result.cancelled) {
+      const generateName = result.uri.split('/')
+
+      const uploadFile = {
+        uri: result.uri,
+        type: "image/png",
+        name: generateName[generateName.length-1]
+      }
+
       setImage(result.uri);
+      handeUpload(uploadFile)
     }
   };
+
+
+  const handeUpload = (image) => {
+    const data = new FormData()
+    data.append('file', image)
+    data.append('upload_preset', 'ruangprivate')
+    data.append('cloud_name', "farhats")
+
+    axios({
+      url: "https://api.cloudinary.com/v1_1/farhats/image/upload",
+      method: 'POST',
+      data: data
+    })
+    .then(data => {
+      console.log(data)
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    
+  }
 
   return (
     // <LinearGradient
