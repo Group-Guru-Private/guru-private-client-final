@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat, Bubble } from 'react-native-gifted-chat'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { StyleSheet, TextInput, View, LogBox, Button, Text } from 'react-native'
 import * as firebase from 'firebase'
@@ -87,12 +87,37 @@ export default function ChatScreen({route}) {
         )
         await Promise.all(writes)
     }
+    
+    function renderBubble (props) {
+        return (
+          <Bubble
+            {...props}
+            wrapperStyle={{
+              right: {
+                backgroundColor: 'aqua'
+              }
+            }}
+          />
+        )
+      }
+    
 
     if (!user) {
         handlePress()
     }
 
-    return <GiftedChat messages={messages} user={user} onSend={handleSend} />
+    return (
+        <View style={{ backgroundColor: "#8c8f8d", flex: 1 }}>
+            <GiftedChat
+                messages={messages}
+                onSend={handleSend}
+                user={user}
+                containerStyle={{ backgroundColor: "black" }}
+            />
+        </View>
+    )
+    //<GiftedChat renderBubble={renderBubble} messages={messages} user={user} onSend={handleSend} style={{backgroundColor: 'red'}}/>
+           
 } 
 
 const styles = StyleSheet.create({

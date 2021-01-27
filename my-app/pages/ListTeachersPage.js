@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableHighlight,
   Alert,
+  RefreshControl
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -34,6 +35,13 @@ import axios from "../config/axiosInstance";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+
+const wait = timeout => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+};
+
 export default function ListTeachersPage() {
   // const [image, setImage] = useState(null);
   const navigate = useNavigation();
@@ -42,6 +50,7 @@ export default function ListTeachersPage() {
   const [loading, setLoading] = useState(false);
   const [filterSubject, setFilterSubject] = useState("");
   const [positionStudent, setPositionStudent] = useState([]);
+  const [refreshing, setRefreshing] = useState(false)
 
   const allSubjects = [
     "Mathematics",
@@ -55,6 +64,18 @@ export default function ListTeachersPage() {
     "Sociology",
     "Economics",
   ];
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true)
+    setLoading(true)
+    getDataById()
+
+    wait(1000).then(() => {
+      setFilterSubject("")
+      setLoading(false)
+      setRefreshing(false)
+    });
+  }, []);
 
   async function getDataById() {
     try {
@@ -78,7 +99,6 @@ export default function ListTeachersPage() {
             duplicate.push(element)
           })
           const sorted = duplicate.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-          //console.log(sorted);
           setTeachers(sorted);
           setAllTeachers(sorted);
           setLoading(false);
@@ -93,15 +113,14 @@ export default function ListTeachersPage() {
 
   useEffect(() => {
     setLoading(true);
-  
+
     getDataById()
 
-    
   }, []);
 
   
 
-  function handleFilterSubject(itemValue) {
+  const handleFilterSubject = (itemValue) => {
     setFilterSubject(itemValue);
     if (itemValue == "") {
       const duplicate = []
@@ -151,7 +170,6 @@ export default function ListTeachersPage() {
   if (loading)
     return (
       <View style={{ marginTop: Constants.statusBarHeight }}>
-        <Text style={{ textAlign: "center" }}>Loading...</Text>
       </View>
     );
   else {
@@ -160,10 +178,15 @@ export default function ListTeachersPage() {
       <>
         <View style={styles.top}></View>
         <View>
-          <Title style={styles.title}>List teacher</Title>
-          <Picker
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <Title style={styles.title}>List Teachers</Title>
+          
+        </ScrollView>
+        </View>
+        <Picker
             selectedValue={filterSubject}
-            style={{ width: "40%", backgroundColor: "red" }}
+            style={{ width: "40%", backgroundColor: "red"}}
             onValueChange={(itemValue, itemIndex) =>
               handleFilterSubject(itemValue)
             }
@@ -173,7 +196,6 @@ export default function ListTeachersPage() {
               return <Picker.Item key={index} label={mapel} value={mapel} />;
             })}
           </Picker>
-        </View>
         <ScrollView>
           {
           teachers.map((teacher) => (
@@ -262,5 +284,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "gray",
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: 'pink',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
