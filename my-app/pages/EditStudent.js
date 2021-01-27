@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Constants from "expo-constants";
@@ -19,7 +20,7 @@ import Slider from "@react-native-community/slider";
 import NumberFormat from "react-number-format";
 
 export default function EditStudent({ route }) {
-  const navigate = useNavigation();
+  const navigation = useNavigation();
   const { profile } = route.params;
   const [slide, setSlide] = useState({
     value: 0,
@@ -64,8 +65,12 @@ export default function EditStudent({ route }) {
           try {
             console.log(data);
             await AsyncStorage.removeItem("name");
-            await AsyncStorage.setItem("name", data.name);
+            await AsyncStorage.setItem("name", newProfile.name);
             Alert.alert(`Edit Success`);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "BottomNav" }]
+            })
           } catch (error) {
             console.log(error);
           }
@@ -93,26 +98,15 @@ export default function EditStudent({ route }) {
           margin: "3%",
         }}
       >
-        <TouchableHighlight
-          onPress={(e) => {
-            navigate.push("BottomNav");
-          }}
-          style={{ marginTop: Constants.statusBarHeight, left: "7%" }}
-        >
-          <Text style={styles.text1}>Cancel</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
+        <View/>
+        <TouchableOpacity
           style={{ marginTop: Constants.statusBarHeight, right: "2%" }}
           onPress={(e) => {
             getAccessToken();
-            navigate.navigate({
-              routes: 'BottomNav',
-              action: navigate.push({ routesName: 'History' }),
-            });
           }}
         >
           <Text style={styles.text1}>Save</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <View style={{ alignItems: "flex-start", alignSelf: "center" }}>
@@ -125,7 +119,7 @@ export default function EditStudent({ route }) {
           />
         </View>
       </View>
-      <View style={{ marginHorizontal: "5%", top: '2%' }}>
+      <View style={{ marginHorizontal: "5%", top: '2%', marginTop: '20%' }}>
         <Text style={styles.text}>Your Name</Text>
         <TextInput
           value={newProfile.name}

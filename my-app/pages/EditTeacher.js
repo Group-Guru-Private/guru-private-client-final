@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Constants from "expo-constants";
@@ -18,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Slider from "@react-native-community/slider";
 import NumberFormat from "react-number-format";
 import MapView, { Marker } from "react-native-maps";
+import * as ImagePicker from "expo-image-picker";
 
 const region = {
   latitude: 37.78825,
@@ -28,15 +30,16 @@ const region = {
 
 export default function EditStudent({ route }) {
   const [currentPositions, setCurrentPositions] = useState(region);
-
   const navigate = useNavigation();
   const { profile } = route.params;
   const [slide, setSlide] = useState({
     value: 0,
     count: 0,
   });
+  const [photo, setPhoto] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
 
-  console.log(profile, "<<<< sliderr");
+
+  //console.log(profile, "<<<< sliderr");
 
   const convertRupiah = (price) => {
     const numberString = price.toString();
@@ -67,6 +70,7 @@ export default function EditStudent({ route }) {
       price: profile.price,
       background: profile.background,
       position: profile.position,
+      image_url: profile.image_url
     });
 
     setCurrentPositions({
@@ -107,8 +111,12 @@ export default function EditStudent({ route }) {
           try {
             console.log(data);
             await AsyncStorage.removeItem("name");
-            await AsyncStorage.setItem("name", data.name);
+            await AsyncStorage.setItem("name", newProfile.name);
             Alert.alert(`Edit Success`);
+            navigate.reset({
+              index: 0,
+              routes: [{ name: "BottomNavTeacher" }]
+            })
           } catch (error) {
             console.log(error);
           }
@@ -118,6 +126,67 @@ export default function EditStudent({ route }) {
       console.log(error);
     }
   };
+
+  async function uploadImage () {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      const generateName = result.uri.split('/')
+
+      const uploadFile = {
+        uri: result.uri,
+        type: "image/png",
+        name: generateName[generateName.length-1]
+      }
+
+      handleUpload(uploadFile)
+    }
+  }
+
+  const handleUpload = (image) => {
+    const data = new FormData()
+    data.append('file', image)
+    data.append('upload_preset', 'ruangprivate')
+    data.append('cloud_name', "farhats")
+
+    axios({
+      url: "https://api.cloudinary.com/v1_1/farhats/image/upload",
+      method: 'POST',
+      data: data
+    })
+    .then(async ({data}) => {
+      const duplicate = {...newProfile, image_url: data.url}
+      try {
+        const access_token = await AsyncStorage.getItem("access_token");
+        const id = await AsyncStorage.getItem("id");
+        axios({
+          url: `/teachers/${id}`,
+          method: "PUT",
+          headers: {
+            access_token: access_token,
+          },
+          data: duplicate
+        })
+        .then(({ data: response }) => {
+          setNewProfile({...newProfile, image_url: data.url})
+          Alert.alert('Success to upload image')
+        })
+        .catch((err) => console.log(err));
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    
+  }
+
 
   const handleChange = (inputValue, inputName) => {
     let value = inputValue;
@@ -136,24 +205,16 @@ export default function EditStudent({ route }) {
           margin: "3%",
         }}
       >
-        <TouchableHighlight
-          onPress={(e) => {
-            navigate.push("BottomNavTeacher");
-          }}
-          style={{ marginTop: Constants.statusBarHeight, left: "7%" }}
-        >
-          <Text style={styles.text1}>Cancel</Text>
-        </TouchableHighlight>
+        <View></View>
         <TouchableHighlight
           style={{
             marginTop: Constants.statusBarHeight,
-            right: "2%",
-            height: "100%",
+            right: "4%",
+            height: "150%",
+            backgroundColor:'red'
           }}
           onPress={(e) => {
             getAccessToken();
-            console.log(newProfile);
-            navigate.push("BottomNavTeacher");
           }}
         >
           <Text style={styles.text1}>Save</Text>
@@ -161,13 +222,14 @@ export default function EditStudent({ route }) {
       </View>
       <View style={styles.container}>
         <View style={{ alignItems: "flex-start", alignSelf: "center", marginTop: '10%' }}>
+      <TouchableOpacity onPress={uploadImage}>
           <Image
             source={{
-              uri:
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+              uri: newProfile.image_url,
             }}
             style={styles.profileImg}
           />
+          
           <MaterialCommunityIcons
             name="pencil"
             size={29}
@@ -179,6 +241,8 @@ export default function EditStudent({ route }) {
               right: "-2%",
             }}
           ></MaterialCommunityIcons>
+       
+        </TouchableOpacity>
         </View>
       </View>
       
