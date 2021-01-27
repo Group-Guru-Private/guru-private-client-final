@@ -5,10 +5,11 @@ import {useNavigation} from '@react-navigation/native'
 import axios from '../config/axiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export default function PaymentPage () {
+export default function PaymentPage ({nav, route}) {
   const [token, setToken] = useState('')
   const webviewRef = React.useRef(null)
   const navigation = useNavigation()
+  const { orderId } = route.params
   const idOrder = 1  //---> ini teh params ya ---> mesti diganti
   // const access_token = AsyncStorage.getItem('access_token')
 
@@ -17,7 +18,7 @@ export default function PaymentPage () {
       try {
         const getToken = await axios({
           method: 'PATCH',
-          url: '/orders/' + idOrder,
+          url: '/orders/' + orderId,
           headers: {
             access_token: await AsyncStorage.getItem('access_token')
           }
@@ -88,7 +89,10 @@ export default function PaymentPage () {
   const onMessage = (event) => {
     const { data } =  event.nativeEvent;
     alert(data)
-    navigation.navigate('Home')
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'BottomNav' }],
+    });
   }
   
   if (token) {
@@ -97,7 +101,7 @@ export default function PaymentPage () {
         javaScriptEnabled={true}
         originWhitelist={['*']}
         source={{ html: htmlContent }}
-        style={{ marginTop: 100 }}
+        
         // injectedJavaScript={injectedJavaScript}
         renderLoading={LoadingIndicatorView}
         startInLoadingState={true}

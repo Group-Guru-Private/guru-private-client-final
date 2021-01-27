@@ -5,12 +5,11 @@ import { Picker } from '@react-native-picker/picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native'
 
 export default function OngoingOrderPage({navigation, route}) {
-    const { teacher, subject } = route.params
+    const { teacher, subject, orderId } = route.params
     const navigate = useNavigation()
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
@@ -28,6 +27,16 @@ export default function OngoingOrderPage({navigation, route}) {
         date: new Date(),
         price: 170000,
         distancePrice: 30000
+    }
+
+    const goChat = async () => {
+      const userId = await AsyncStorage.getItem('id')
+      const username = await AsyncStorage.getItem('name')
+      navigate.push('Chat', {
+        roomId: orderId,
+        userId: `student${userId}`,
+        name: username
+      })
     }
 
     return (
@@ -56,7 +65,10 @@ export default function OngoingOrderPage({navigation, route}) {
             <View
                 style={styles.containerbot}
             >
-            <TouchableHighlight style={styles.button} onPress={e => {navigate.push('Payment')}}>
+            <TouchableHighlight style={styles.button} onPress={e => {navigate.push('Payment', { orderId: orderId })}}>
+              <Text>Payment</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.button} onPress={goChat}>
               <Text>Chat</Text>
             </TouchableHighlight>
         </View>
