@@ -45,7 +45,7 @@ export default function OrderPage({ navigation, route }) {
   const submitOrder = async () => {
     try {
       const value = await AsyncStorage.getItem("access_token");
-      const total = teacher.price + countDistance(distance)
+      const total = teacher.price + countDistance(distance);
       if (value !== null) {
         axios({
           url: `/orders/${teacher.id}`,
@@ -54,7 +54,7 @@ export default function OrderPage({ navigation, route }) {
             subject: subject,
             date: date.toISOString().split("T")[0],
             distance: distance,
-            total_price: total
+            total_price: total,
           },
           headers: {
             access_token: value,
@@ -91,46 +91,71 @@ export default function OrderPage({ navigation, route }) {
     }
   }
 
+  const convertRupiah = (price) => {
+    const numberString = price.toString();
+    const sisa = numberString.length % 3;
+    var rupiah = numberString.substr(0, sisa);
+    const ribuan = numberString.substr(sisa).match(/\d{3}/g);
+    if (ribuan) {
+      const separator = sisa ? "." : "";
+      rupiah += separator + ribuan.join(".");
+    }
+    return rupiah;
+  };
+
   return (
     <LinearGradient
-      // Background Linear Gradient
+    
       colors={["#008bb5", "#48bcae"]}
       style={{ height: "100%" }}
     >
-      {/* <> */}
+   
       <View style={styles.top}></View>
       <View style={styles.container}>
         <View style={{ flexDirection: "row" }}>
-          {/* <View style={{ top: "-8%" }}> */}
+    
           <Image
             source={{
               uri:
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                teacher.image_url,
             }}
             style={styles.profileImg}
           />
-          {/* </View> */}
+       
           <View
             style={{
-              alignItems: "flex-start",
               marginLeft: "5%",
               justifyContent: "center",
             }}
           >
             <Text style={styles.text1}>{teacher.name}</Text>
             <Text style={styles.text2}>{teacher.email}</Text>
-            <View style={{ flexDirection: "row", marginTop: "5%" }}>
-              <MaterialCommunityIcons name="map-marker" size={13} color="white">
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: "5%",
+                // backgroundColor: "red",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{flexDirection: 'row'}}>
+                <MaterialCommunityIcons
+                  name="map-marker"
+                  size={14}
+                  color="white"
+                  style={{ marginRight: "4%" }}
+                ></MaterialCommunityIcons>
                 <Text style={styles.text3}>{teacher.address}</Text>
-              </MaterialCommunityIcons>
-              <MaterialCommunityIcons
-                name="star"
-                size={13}
-                color="white"
-                style={{ paddingLeft: "10%" }}
-              >
+              </View>
+              <View style={{flexDirection: 'row',}}>
+                <MaterialCommunityIcons
+                  name="star"
+                  size={14}
+                  color="white"
+                  style={{paddingRight: '1%'}}
+                ></MaterialCommunityIcons>
                 <Text style={styles.text3}>{teacher.rating}</Text>
-              </MaterialCommunityIcons>
+              </View>
             </View>
           </View>
         </View>
@@ -224,26 +249,31 @@ export default function OrderPage({ navigation, route }) {
             }}
           >
             <Text style={{ color: "#008bb5" }}>Course Price</Text>
-            <Text style={{ color: "#008bb5" }}> Rp.{teacher.price}</Text>
+            <Text style={{ color: "#008bb5" }}>
+              {" "}
+              Rp.{convertRupiah(teacher.price)}
+            </Text>
           </View>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              marginHorizontal: "14%",
+              marginHorizontal: "13%",
             }}
           >
-            <Text style={{ color: "#008bb5" }}>Distance Price</Text>
-            <Text style={{ color: "#008bb5" }}>Rp.{countDistance(distance)}</Text>
+            <Text style={{ color: "#008bb5" }}> Distance Price</Text>
+            <Text style={{ color: "#008bb5", right: "21%" }}>
+              Rp.{convertRupiah(countDistance(distance))}
+            </Text>
           </View>
           <View
             style={{
-              left: '5%',
+              left: "5%",
               alignSelf: "flex-end",
               marginHorizontal: "14%",
             }}
           >
-            <Text style={{ color: "#008bb5" }}>---------------- +</Text>
+            <Text style={{ color: "#008bb5" }}>-------------------- +</Text>
           </View>
           <View
             style={{
@@ -254,8 +284,8 @@ export default function OrderPage({ navigation, route }) {
             }}
           >
             <Text style={{ color: "#008bb5" }}>Total Price</Text>
-            <Text style={{ color: "#008bb5" }}>
-              Rp.{teacher.price + countDistance(distance)}
+            <Text style={{ color: "#008bb5", right: "5%" }}>
+              Rp.{convertRupiah(teacher.price + countDistance(distance))}
             </Text>
           </View>
           <TouchableHighlight
@@ -270,7 +300,7 @@ export default function OrderPage({ navigation, route }) {
           </TouchableHighlight>
         </View>
       </View>
-      {/* </> */}
+   
     </LinearGradient>
   );
 }
@@ -304,7 +334,7 @@ const styles = StyleSheet.create({
     top: "-5%",
   },
   button: {
-    marginHorizontal: '10%',
+    marginHorizontal: "10%",
     height: "25%",
     // width: "200%",
     borderRadius: 30,
