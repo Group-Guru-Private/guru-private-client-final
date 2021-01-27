@@ -101,7 +101,7 @@ export default function PaymentPage ({nav, route}) {
         javaScriptEnabled={true}
         originWhitelist={['*']}
         source={{ html: htmlContent }}
-        style={{ marginTop: 100 }}
+        
         // injectedJavaScript={injectedJavaScript}
         renderLoading={LoadingIndicatorView}
         startInLoadingState={true}

@@ -37,6 +37,7 @@ export default function LoginPage() {
             console.log(data);
             await AsyncStorage.setItem("access_token", data.access_token);
             await AsyncStorage.setItem("id", data.id.toString());
+            await AsyncStorage.setItem("name", data.name);
             navigate.replace("BottomNavTeacher");
           } catch (err) {
             // saving error
