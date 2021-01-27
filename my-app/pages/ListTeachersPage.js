@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableHighlight,
   Alert,
+  RefreshControl
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -36,6 +37,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+
+const wait = timeout => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+};
+
 export default function ListTeachersPage() {
   // const [image, setImage] = useState(null);
   const navigate = useNavigation();
@@ -44,6 +52,7 @@ export default function ListTeachersPage() {
   const [loading, setLoading] = useState(false);
   const [filterSubject, setFilterSubject] = useState("");
   const [positionStudent, setPositionStudent] = useState([]);
+  const [refreshing, setRefreshing] = useState(false)
 
   const allSubjects = [
     "Mathematics",
@@ -57,6 +66,18 @@ export default function ListTeachersPage() {
     "Sociology",
     "Economics",
   ];
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true)
+    setLoading(true)
+    getDataById()
+
+    wait(1000).then(() => {
+      setFilterSubject("")
+      setLoading(false)
+      setRefreshing(false)
+    });
+  }, []);
 
   async function getDataById() {
     try {
@@ -74,20 +95,14 @@ export default function ListTeachersPage() {
           const filteredData = data.filter((el) => {
             return el.available_status == true;
           });
-          const duplicate = [];
-          filteredData.forEach((element) => {
-            element["distance"] = getDistanceFromLatLonInKm(
-              tempPos[0],
-              tempPos[1],
-              element.position[0],
-              element.position[1]
-            );
-            duplicate.push(element);
-          });
-          const sorted = duplicate.sort(
-            (a, b) => parseFloat(a.distance) - parseFloat(b.distance)
-          );
-          //console.log(sorted);
+        
+          const duplicate = []
+          filteredData.forEach(element => {
+            element['distance'] = getDistanceFromLatLonInKm(tempPos[0], tempPos[1], element.position[0], element.position[1])
+            duplicate.push(element)
+          })
+          const sorted = duplicate.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
+
           setTeachers(sorted);
           setAllTeachers(sorted);
           setLoading(false);
@@ -103,10 +118,12 @@ export default function ListTeachersPage() {
   useEffect(() => {
     setLoading(true);
 
-    getDataById();
+    getDataById()
+
   }, []);
 
-  function handleFilterSubject(itemValue) {
+  const handleFilterSubject = (itemValue) => {
+
     setFilterSubject(itemValue);
     if (itemValue == "") {
       const duplicate = [];
@@ -172,7 +189,6 @@ export default function ListTeachersPage() {
   if (loading)
     return (
       <View style={{ marginTop: Constants.statusBarHeight }}>
-        <Text style={{ textAlign: "center" }}>Loading...</Text>
       </View>
     );
   else {
@@ -181,10 +197,15 @@ export default function ListTeachersPage() {
       <>
         <View style={styles.top}></View>
         <View>
-          <Title style={styles.title}>List teacher</Title>
-          <Picker
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <Title style={styles.title}>List Teachers</Title>
+          
+        </ScrollView>
+        </View>
+        <Picker
             selectedValue={filterSubject}
-            style={{ width: "40%", backgroundColor: "red" }}
+            style={{ width: "40%", backgroundColor: "red"}}
             onValueChange={(itemValue, itemIndex) =>
               handleFilterSubject(itemValue)
             }
@@ -194,7 +215,6 @@ export default function ListTeachersPage() {
               return <Picker.Item key={index} label={mapel} value={mapel} />;
             })}
           </Picker>
-        </View>
         <ScrollView>
           {teachers.map((teacher) => (
             <TouchableOpacity
@@ -342,5 +362,11 @@ const styles = StyleSheet.create({
     color: '#008bb5',
     fontWeight: 'bold',
     fontSize: 18
-  }
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: 'pink',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
