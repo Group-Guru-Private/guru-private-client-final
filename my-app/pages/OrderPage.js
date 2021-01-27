@@ -45,6 +45,7 @@ export default function OrderPage({ navigation, route }) {
   const submitOrder = async () => {
     try {
       const value = await AsyncStorage.getItem("access_token");
+      const total = teacher.price + countDistance(distance)
       if (value !== null) {
         axios({
           url: `/orders/${teacher.id}`,
@@ -52,7 +53,8 @@ export default function OrderPage({ navigation, route }) {
           data: {
             subject: subject,
             date: date.toISOString().split("T")[0],
-            distance: 10,
+            distance: distance,
+            total_price: total
           },
           headers: {
             access_token: value,
@@ -75,17 +77,17 @@ export default function OrderPage({ navigation, route }) {
     }
   };
 
-  function countDistance() {
-    if (distance < 1) {
-      return 3000;
-    } else if (distance >= 1 && distance < 3) {
+  function countDistance(distanceParams) {
+    if (distanceParams < 1) {
       return 5000;
-    } else if (distance >= 3 && distance < 6) {
-      return 7000;
-    } else if (distance >= 6 && distance < 10) {
-      return 12000;
-    } else {
+    } else if (distanceParams >= 1 && distanceParams < 3) {
+      return 10000;
+    } else if (distanceParams >= 3 && distanceParams < 6) {
       return 15000;
+    } else if (distanceParams >= 6 && distanceParams < 10) {
+      return 20000;
+    } else {
+      return 30000;
     }
   }
 
@@ -232,7 +234,7 @@ export default function OrderPage({ navigation, route }) {
             }}
           >
             <Text style={{ color: "#008bb5" }}>Distance Price</Text>
-            <Text style={{ color: "#008bb5" }}>Rp.{countDistance()}</Text>
+            <Text style={{ color: "#008bb5" }}>Rp.{countDistance(distance)}</Text>
           </View>
           <View
             style={{
@@ -253,7 +255,7 @@ export default function OrderPage({ navigation, route }) {
           >
             <Text style={{ color: "#008bb5" }}>Total Price</Text>
             <Text style={{ color: "#008bb5" }}>
-              Rp.{teacher.price + countDistance()}
+              Rp.{teacher.price + countDistance(distance)}
             </Text>
           </View>
           <TouchableHighlight

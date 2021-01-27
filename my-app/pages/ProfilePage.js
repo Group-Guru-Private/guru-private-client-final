@@ -129,7 +129,7 @@ export default function ProfilePage() {
             color="white"
             size={28}
             onPress={(e) => {
-              navigate.push("EditStudent", {profile});
+              navigate.replace("EditStudent", {profile});
             }} 
           ></MaterialCommunityIcons>
         </TouchableHighlight>
