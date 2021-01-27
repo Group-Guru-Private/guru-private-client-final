@@ -122,7 +122,7 @@ export default function ProfilePage() {
         }}
       >
         {/* <Text style={styles.title}>Profile</Text> */}
-        <TouchableHighlight style={{marginTop: Constants.statusBarHeight, left: '7%'}}>
+        <TouchableHighlight style={{marginTop: Constants.statusBarHeight, left: '12%'}}>
           <MaterialCommunityIcons
             style={styles.icon}
             name="pencil"
@@ -166,12 +166,12 @@ export default function ProfilePage() {
             <Text style={styles.text}>Your Email</Text>
             <Text style={styles.text2}>{profile.email}</Text>
             <Text style={styles.text}>Your Phone Number</Text>
-            <Text style={styles.text2}>{profile.phone}</Text>
+            <Text style={styles.text2}>{profile.telpon_number}</Text>
             <Text style={styles.text}>Your Adress</Text>
             <Text style={styles.text2}>{profile.address}</Text>
           </View>
       </View>
-        <Button title="test edit" onPress={() => navigate.replace('EditStudent', {profile})} />
+        {/* <Button title="test edit" onPress={() => navigate.replace('EditStudent', {profile})} /> */}
         {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
       </>
     

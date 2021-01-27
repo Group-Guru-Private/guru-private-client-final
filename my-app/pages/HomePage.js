@@ -47,11 +47,20 @@ export default function HomePage() {
   const [name, setName] = useState("");
   const navigate = useNavigation();
   const SLIDER_WIDTH = Dimensions.get("window").width;
+  const dummy = [
+    {
+      title: "Sorry you have not taken any courses",
+      uri:
+        "https://w7.pngwing.com/pngs/340/299/png-transparent-computer-icons-magnifying-glass-symbol-filename-extension-list-angle-text-rectangle-thumbnail.png",
+    },
+  ];
+
+  // console.log(topTeachers);
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-    getName()
+    getName();
     axios
       .get("/orders")
       .then(async ({ data }) => {
@@ -94,7 +103,7 @@ export default function HomePage() {
           navigate.push("OngoingOrder", {
             teacher: item.Teacher,
             subject: item.subject,
-            orderId: item.id
+            orderId: item.id,
           })
         }
       >
@@ -147,34 +156,44 @@ export default function HomePage() {
       </TouchableOpacity>
     );
   };
+
+  const goDummy = ({ item }) => {
+    return (
+      <View
+        style={{
+          height: 250,
+          // paddingHorizontal: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "floralwhite",
+          borderRadius: 20,
+        }}
+      >
+        <Image
+          source={{ uri: item.uri }}
+          style={{ width: "70%", height: "60%", marginBottom: "13%" }}
+        ></Image>
+        <Text style={{ top: "-14%", color: "#008bb5" }}>{item.title}</Text>
+      </View>
+    );
+  };
+
   const goSquare = ({ item, index }) => {
     return (
       <TouchableOpacity onPress={() => goOrder(item)}>
         <View
           style={{
-            height: 150,
+            // height: 150,
             padding: 10,
-            // justifyContent: "center",
-            // alignContent: 'center',
             backgroundColor: "floralwhite",
             borderRadius: 20,
-            // flexDirection: "row",
-            alignItems: "center",
           }}
         >
-          {index === 0 || index === 1 || index === 2 ? (
-            <MaterialCommunityIcons
-              name="trophy"
-              size={24}
-              color='#008bb5'
-              style={{ alignSelf: "flex-start"}}
-            ></MaterialCommunityIcons>
-          ) : null}
           <View
             style={{
+              // backgroundColor: "red",
               flexDirection: "row",
-              marginLeft: "-3%",
-              marginTop: "10%",
+              justifyContent: "space-between",
             }}
           >
             <Image
@@ -183,43 +202,66 @@ export default function HomePage() {
               }}
               style={styles.profileImg1}
             ></Image>
-            <View style={{ alignSelf: "center" }}>
+            <View style={{ justifyContent: "center" }}>
               <Text
-                style={{ fontSize: 14, marginLeft: "7%", fontWeight: "bold" }}
+                style={{
+                  fontSize: 14,
+                  fontWeight: "bold",
+                  color: "#008bb5",
+                }}
               >
                 {item.name}
               </Text>
-              <View
+              <Text
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
+                  fontSize: 12,
+                  alignSelf: "center",
+                  color: "#008bb5",
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginLeft: "7%",
-                    marginTop: "2%",
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="star"
-                    size={14}
-                  ></MaterialCommunityIcons>
-                  <Text style={{ fontSize: 10, marginLeft: "10%" }}>
-                    {item.rating}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: "row", marginLeft: "7%" }}>
-                  <MaterialIcons name="attach-money" size={14}></MaterialIcons>
-                  <Text style={{ fontSize: 10 }}>{item.price}</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 10, marginLeft: "8%", marginTop: "2%" }}>
-                {item.address}
+                {item.subjects[0]}
               </Text>
             </View>
+            {index === 0 || index === 1 || index === 2 ? (
+              <MaterialCommunityIcons
+                name="trophy"
+                size={18}
+                color="#008bb5"
+                style={{ alignSelf: "flex-start" }}
+              ></MaterialCommunityIcons>
+            ) : null}
           </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: "6%",
+              // backgroundColor: "brown",
+              justifyContent: "space-between",
+              marginHorizontal: '8%',
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="star"
+                size={16}
+                color="#008bb5"
+              ></MaterialCommunityIcons>
+              <Text style={{ fontSize: 14, color: '#008bb5' }}>{item.rating}</Text>
+            </View>
+
+            <View style={{ flexDirection: "row" }}>
+              <MaterialIcons name="attach-money" size={16} color="#008bb5" ></MaterialIcons>
+              <Text style={{ fontSize: 14, color: '#008bb5' }}>{item.price}</Text>
+            </View>
+          </View>
+          {/* <View>
+            <Text style={{ fontSize: 16 }}>{item.address}</Text>
+          </View> */}
         </View>
       </TouchableOpacity>
     );
@@ -233,20 +275,29 @@ export default function HomePage() {
   const getName = async () => {
     try {
       const nameStudent = await AsyncStorage.getItem("name");
-      return setName(nameStudent)
+      return setName(nameStudent);
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    // <SafeAreaView style={styles.container}>
     <>
       <View style={styles.top}></View>
-      <Title style={styles.title}>Hello!</Title>
-      <Text style={{ fontSize: 20, color: "white", marginLeft: "6%" }}>
-        {name}
-      </Text>
+      <View style={{ marginTop: "10%", marginLeft: "5%" }}>
+        <Title style={styles.title}>Hello!</Title>
+        <Text
+          style={{
+            fontSize: 20,
+            color: "white",
+            marginLeft: "1%",
+            marginTop: "1%",
+          }}
+        >
+          {name}
+        </Text>
+      </View>
+
       <View
         style={{
           flex: 1,
@@ -258,9 +309,9 @@ export default function HomePage() {
         <Carousel
           layout={"default"}
           sliderWidth={SLIDER_WIDTH}
-          data={orders}
+          data={orders.length ? orders : dummy}
           itemWidth={350}
-          renderItem={goDetail}
+          renderItem={orders.length ? goDetail : goDummy}
         ></Carousel>
       </View>
       <Text
@@ -292,7 +343,6 @@ export default function HomePage() {
         ></Carousel>
       </View>
     </>
-    // </SafeAreaView>
   );
 }
 
@@ -310,10 +360,6 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   title: {
-    // flex: 1,
-    marginTop: "10%",
-    // marginBottom: "2%",
-    marginLeft: "5%",
     textAlign: "left",
     fontSize: 32,
     fontWeight: "bold",
@@ -325,14 +371,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   borderTop: {
-    //  backgroundColor: "#008bb5",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
   },
   borderBot: {
-    // backgroundColor: "#008bb5",
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
   },
@@ -343,8 +387,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   profileImg1: {
-    width: 70,
-    height: 70,
+    width: 65,
+    height: 65,
     borderRadius: 150 / 2,
     overflow: "hidden",
   },

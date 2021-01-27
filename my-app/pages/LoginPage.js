@@ -109,7 +109,7 @@ export default function LoginPage() {
           onChangeText={(text) => setPassword(text)}
           value={password}
         />
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             alignSelf: "flex-start",
@@ -124,7 +124,7 @@ export default function LoginPage() {
           <Text style={{ padding: "1%", color: "floralwhite" }}>
             I'm a teacher
           </Text>
-        </View>
+        </View> */}
       </View>
       <View style={styles.containerbot}>
         <TouchableHighlight style={styles.button} onPress={handleLogin}>

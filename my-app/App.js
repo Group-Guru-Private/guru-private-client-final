@@ -34,6 +34,7 @@ export default function App() {
           <Stack.Screen name="BottomNav" options={{headerTransparent: true, title: null}} component={BottomNav}/>
           <Stack.Screen name="BottomNavTeacher" options={{headerTransparent: true, title: null}} component={BottomNavTeacher}/>
           <Stack.Screen name="EditStudent" options={{headerTransparent: true, title: null}} component={EditStudent}/>
+          <Stack.Screen name="EditTeacher" options={{headerTransparent: true, title: null}} component={EditTeacher}/>
           <Stack.Screen name="ProfileStudent" options={{headerTransparent: true, title: null}} component={ProfilePage}/>
         </Stack.Navigator>
       </NavigationContainer>

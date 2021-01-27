@@ -1,12 +1,7 @@
 import React from "react";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import LandingPage from "../pages/LandingPage";
 import HomeTeacherPage from "../pages/HomeTeacherPage";
-import ProfilePage from "../pages/ProfilePage";
-import HistoryPage from "../pages/HistoryPage";
-import ListTeachersPage from "../pages/ListTeachersPage"
-import RegisterPage from "../pages/RegisterPage"
-import OrderPage from "../pages/OrderPage"
+import TeacherProfilePage from '../pages/TeacherProfilePage'
 import { useFonts } from "expo-font";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -34,8 +29,8 @@ export default function BottomNavTeacher() {
           }}
         />
         <Tab.Screen
-          name="Profile"
-          component={ProfilePage}
+          name="ProfileTeacher"
+          component={TeacherProfilePage}
           options={{
             tabBarLabel: " ",
             tabBarIcon: ({ color }) => (
