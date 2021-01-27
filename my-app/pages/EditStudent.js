@@ -8,7 +8,7 @@ import {
   Button,
   TextInput,
   Alert,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Constants from "expo-constants";
@@ -43,8 +43,7 @@ export default function EditStudent({ route }) {
     setNewProfile({
       name: profile.name,
       address: profile.address,
-      telpon_number: profile.phone,
-      password: "",
+      telpon_number: profile.telpon_number,
     });
   }, []);
 
@@ -100,15 +99,6 @@ export default function EditStudent({ route }) {
           }}
           style={{ marginTop: Constants.statusBarHeight, left: "7%" }}
         >
-          {/* <MaterialCommunityIcons
-            style={styles.icon}
-            name="pencil"
-            color="white"
-            size={28}
-            onPress={(e) => {
-              navigate.replace("Landing");
-            }}
-          ></MaterialCommunityIcons> */}
           <Text style={styles.text1}>Cancel</Text>
         </TouchableHighlight>
         <TouchableHighlight
@@ -118,15 +108,6 @@ export default function EditStudent({ route }) {
             navigate.push("BottomNav");
           }}
         >
-          {/* <MaterialCommunityIcons
-            style={styles.icon}
-            name="logout"
-            color="white"
-            size={28}
-            onPress={(e) => {
-              navigate.replace("Landing");
-            }}
-          ></MaterialCommunityIcons> */}
           <Text style={styles.text1}>Save</Text>
         </TouchableHighlight>
       </View>
@@ -139,31 +120,13 @@ export default function EditStudent({ route }) {
             }}
             style={styles.profileImg}
           />
-          <MaterialCommunityIcons
-            name="pencil"
-            size={29}
-            color={"floralwhite"}
-            style={{
-              position: "absolute",
-              alignSelf: "flex-end",
-              marginTop: "20%",
-              right: "-2%",
-            }}
-          ></MaterialCommunityIcons>
         </View>
       </View>
-      <View style={{ marginHorizontal: '5%', top:"15%" }}>
+      <View style={{ marginHorizontal: "5%", top: '2%' }}>
         <Text style={styles.text}>Your Name</Text>
         <TextInput
           value={newProfile.name}
           onChangeText={(value) => handleChange(value, "name")}
-          style={styles.input}
-        ></TextInput>
-        <Text style={styles.text}>Your Password</Text>
-        <TextInput
-          value={newProfile.password}
-          onChangeText={(value) => handleChange(value, "password")}
-          secureTextEntry={true}
           style={styles.input}
         ></TextInput>
         <Text style={styles.text}>Your Address</Text>
@@ -178,21 +141,6 @@ export default function EditStudent({ route }) {
           onChangeText={(value) => handleChange(value, "telpon_number")}
           style={styles.input}
         ></TextInput>
-         <Text style={styles.text}>Your Price</Text>
-        <View>
-          <Slider
-            onSlidingComplete={(value) =>
-              setSlide({
-                value: value * 1000000,
-                count: slide.count + 1,
-              })
-            }
-          ></Slider>
-          <Text>Price: {currency(slide.value.toFixed())} / day</Text>
-          {/* <Text>
-          <NumberFormat value={slide.value} displayType={'text'} thousandSeparator={true} prefix={'IDR'} />
-          </Text> */}
-        </View>
       </View>
     </>
   );
@@ -259,10 +207,10 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     color: "#008bb5",
     marginBottom: "5%",
-    marginTop: '3%'
+    marginTop: "3%",
   },
   input: {
-    marginTop: '3%',
-    marginBottom: '5%'
-  }
+    marginTop: "3%",
+    marginBottom: "5%",
+  },
 });

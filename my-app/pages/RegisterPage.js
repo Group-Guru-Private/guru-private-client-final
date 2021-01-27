@@ -149,7 +149,7 @@ export default function RegisterPage() {
         colors={["#008bb5", "#48bcae"]}
         style={{ height: "100%" }}
       >
-        <View style={styles.top}></View>
+        {/* <View style={styles.top}></View> */}
         <View style={styles.container}>
           <Text
             style={{

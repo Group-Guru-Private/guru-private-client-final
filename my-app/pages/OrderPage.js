@@ -27,20 +27,6 @@ export default function OrderPage({ navigation, route }) {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
-  const dataTeacher = {
-    id: "123",
-    name: "Sudirman",
-    email: "sudirman@gmail.com",
-    rating: 4.2,
-    distance: 1.2,
-    background: "Bachelor Degree of Computer Science at Hacktiv University",
-    subject: "Biology",
-    phone: "081212525252",
-    date: new Date(),
-    price: 170000,
-    distancePrice: 30000,
-  };
-
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
@@ -65,7 +51,7 @@ export default function OrderPage({ navigation, route }) {
           method: "POST",
           data: {
             subject: subject,
-            date: date.toISOString().split('T')[0],
+            date: date.toISOString().split("T")[0],
             distance: 10,
           },
           headers: {
@@ -76,7 +62,7 @@ export default function OrderPage({ navigation, route }) {
             Alert.alert(`Order Success`);
             navigate.reset({
               index: 0,
-              routes: [{ name: 'BottomNav' }],
+              routes: [{ name: "BottomNav" }],
             });
           })
           .catch((err) => {
@@ -88,22 +74,18 @@ export default function OrderPage({ navigation, route }) {
       console.log(e);
     }
   };
-  
-  function countDistance () {
-    if(distance < 1){
-      return 3000
-    }
-    else if(distance >= 1 && distance < 3){
-      return 5000
-    }
-    else if(distance >= 3 && distance < 6){
-      return 7000
-    }
-    else if(distance >= 6 && distance < 10){
-      return 12000
-    }
-    else {
-      return 15000
+
+  function countDistance() {
+    if (distance < 1) {
+      return 3000;
+    } else if (distance >= 1 && distance < 3) {
+      return 5000;
+    } else if (distance >= 3 && distance < 6) {
+      return 7000;
+    } else if (distance >= 6 && distance < 10) {
+      return 12000;
+    } else {
+      return 15000;
     }
   }
 
@@ -167,7 +149,6 @@ export default function OrderPage({ navigation, route }) {
           fontWeight: "bold",
           color: "#008bb5",
           marginLeft: "12%",
-          // marginBottom: "3%",
           top: "-8%",
         }}
       >
@@ -182,7 +163,7 @@ export default function OrderPage({ navigation, route }) {
             height: "16%",
             overflow: "hidden",
             justifyContent: "center",
-            alignItems: "center",
+            alignSelf: "center",
             elevation: 10,
             top: "-2%",
           }}
@@ -203,7 +184,7 @@ export default function OrderPage({ navigation, route }) {
             fontWeight: "bold",
             color: "#008bb5",
             marginTop: "2%",
-            right: "30%",
+            marginLeft: "12%",
           }}
         >
           Date
@@ -221,46 +202,71 @@ export default function OrderPage({ navigation, route }) {
             onChange={onChange}
           />
         )}
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            color: "#008bb5",
-            marginBottom: "2%",
-            right: "30%",
-          }}
-        >
-          Total
-        </Text>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ left: "-300%", color: "#008bb5" }}>Course Price</Text>
-          <Text style={{ left: "300%", color: "#008bb5" }}> Rp.{teacher.price}</Text>
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ left: "-320%", color: "#008bb5" }}>
-            Distance Price
+        <View>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              color: "#008bb5",
+              marginBottom: "2%",
+              marginLeft: "12%",
+            }}
+          >
+            Total
           </Text>
-        <Text style={{ left: "275%", color: "#008bb5" }}>Rp.{countDistance()}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginHorizontal: "14%",
+            }}
+          >
+            <Text style={{ color: "#008bb5" }}>Course Price</Text>
+            <Text style={{ color: "#008bb5" }}> Rp.{teacher.price}</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginHorizontal: "14%",
+            }}
+          >
+            <Text style={{ color: "#008bb5" }}>Distance Price</Text>
+            <Text style={{ color: "#008bb5" }}>Rp.{countDistance()}</Text>
+          </View>
+          <View
+            style={{
+              left: '5%',
+              alignSelf: "flex-end",
+              marginHorizontal: "14%",
+            }}
+          >
+            <Text style={{ color: "#008bb5" }}>---------------- +</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: "5%",
+              justifyContent: "space-between",
+              marginHorizontal: "14%",
+            }}
+          >
+            <Text style={{ color: "#008bb5" }}>Total Price</Text>
+            <Text style={{ color: "#008bb5" }}>
+              Rp.{teacher.price + countDistance()}
+            </Text>
+          </View>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={(e) => {
+              submitOrder();
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+              Order
+            </Text>
+          </TouchableHighlight>
         </View>
-        <Text style={{left: '27%', color: "#008bb5"}}>
-          ---------------------- +
-        </Text>
-        <View style={{ flexDirection: "row", marginBottom: '5%' }}>
-          <Text style={{ left: "-335%", color: "#008bb5" }}>
-            Total Price
-          </Text>
-          <Text style={{ left: "335%", color: "#008bb5" }}>Rp.{teacher.price + countDistance()}</Text>
-        </View>
-        <TouchableHighlight
-          style={styles.button}
-          onPress={(e) => {
-            submitOrder();
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-            Order
-          </Text>
-        </TouchableHighlight>
       </View>
       {/* </> */}
     </LinearGradient>
@@ -292,13 +298,13 @@ const styles = StyleSheet.create({
   },
   containerbot: {
     flex: 1,
-    alignItems: "center",
+    // alignItems: "center",
     top: "-5%",
   },
   button: {
-    // marginTop: '28%',
-    height: "16%",
-    width: "80%",
+    marginHorizontal: '10%',
+    height: "25%",
+    // width: "200%",
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
@@ -317,11 +323,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    textAlign: "center",
     backgroundColor: "rgba(245,245,245,1)",
     marginBottom: "3%",
     marginTop: "3%",
     elevation: 10,
+    alignSelf: "center",
   },
   input1: {
     height: "100%",
@@ -339,6 +345,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 15,
     fontWeight: "100",
+    marginLeft: "1%",
+    marginTop: "2%",
   },
   text3: {
     color: "white",
