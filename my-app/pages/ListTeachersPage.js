@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableHighlight,
   Alert,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import LandingPage from "./LandingPage";
@@ -37,9 +37,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-
-const wait = timeout => {
-  return new Promise(resolve => {
+const wait = (timeout) => {
+  return new Promise((resolve) => {
     setTimeout(resolve, timeout);
   });
 };
@@ -52,7 +51,7 @@ export default function ListTeachersPage() {
   const [loading, setLoading] = useState(false);
   const [filterSubject, setFilterSubject] = useState("");
   const [positionStudent, setPositionStudent] = useState([]);
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
   const allSubjects = [
     "Mathematics",
@@ -68,14 +67,14 @@ export default function ListTeachersPage() {
   ];
 
   const onRefresh = React.useCallback(async () => {
-    setRefreshing(true)
-    setLoading(true)
-    getDataById()
+    setRefreshing(true);
+    setLoading(true);
+    getDataById();
 
     wait(1000).then(() => {
-      setFilterSubject("")
-      setLoading(false)
-      setRefreshing(false)
+      setFilterSubject("");
+      setLoading(false);
+      setRefreshing(false);
     });
   }, []);
 
@@ -95,13 +94,20 @@ export default function ListTeachersPage() {
           const filteredData = data.filter((el) => {
             return el.available_status == true;
           });
-        
-          const duplicate = []
-          filteredData.forEach(element => {
-            element['distance'] = getDistanceFromLatLonInKm(tempPos[0], tempPos[1], element.position[0], element.position[1])
-            duplicate.push(element)
-          })
-          const sorted = duplicate.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
+
+          const duplicate = [];
+          filteredData.forEach((element) => {
+            element["distance"] = getDistanceFromLatLonInKm(
+              tempPos[0],
+              tempPos[1],
+              element.position[0],
+              element.position[1]
+            );
+            duplicate.push(element);
+          });
+          const sorted = duplicate.sort(
+            (a, b) => parseFloat(a.distance) - parseFloat(b.distance)
+          );
 
           setTeachers(sorted);
           setAllTeachers(sorted);
@@ -118,12 +124,10 @@ export default function ListTeachersPage() {
   useEffect(() => {
     setLoading(true);
 
-    getDataById()
-
+    getDataById();
   }, []);
 
   const handleFilterSubject = (itemValue) => {
-
     setFilterSubject(itemValue);
     if (itemValue == "") {
       const duplicate = [];
@@ -154,7 +158,7 @@ export default function ListTeachersPage() {
       });
       setTeachers(filterByItemValue);
     }
-  }
+  };
 
   const goDetail = (teacher) => {
     const distance = getDistanceFromLatLonInKm(
@@ -187,25 +191,28 @@ export default function ListTeachersPage() {
   }
 
   if (loading)
-    return (
-      <View style={{ marginTop: Constants.statusBarHeight }}>
-      </View>
-    );
+    return <View style={{ marginTop: Constants.statusBarHeight }}></View>;
   else {
     return (
       // <SafeAreaView style={styles.container}>
       <>
         <View style={styles.top}></View>
         <View>
-        <ScrollView
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          <Title style={styles.title}>List Teachers</Title>
-          
-        </ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            <Title style={styles.title}>List Teachers</Title>
+          </ScrollView>
         </View>
-        <Picker
+        <View style={{ alignItems: "flex-end", marginBottom: "3%" }}>
+          <Picker
             selectedValue={filterSubject}
-            style={{ width: "40%", backgroundColor: "red"}}
+            style={{
+              width: "40%",
+              color: "floralwhite",
+            }}
             onValueChange={(itemValue, itemIndex) =>
               handleFilterSubject(itemValue)
             }
@@ -215,6 +222,7 @@ export default function ListTeachersPage() {
               return <Picker.Item key={index} label={mapel} value={mapel} />;
             })}
           </Picker>
+        </View>
         <ScrollView>
           {teachers.map((teacher) => (
             <TouchableOpacity
@@ -231,8 +239,9 @@ export default function ListTeachersPage() {
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        marginBottom: '4%',
-                        marginLeft: '2%', marginTop: '3%'
+                        marginBottom: "4%",
+                        marginLeft: "2%",
+                        marginTop: "3%",
                       }}
                     >
                       <Image
@@ -248,8 +257,9 @@ export default function ListTeachersPage() {
                         }}
                       >
                         <Text style={styles.text1}>{teacher.name}</Text>
-                        <Text style={styles.text}>{teacher.subjects.join(", ")}</Text>
-                       
+                        <Text style={styles.text}>
+                          {teacher.subjects.join(", ")}
+                        </Text>
                       </View>
                     </View>
                     <View
@@ -258,24 +268,22 @@ export default function ListTeachersPage() {
                         marginVertical: "5%",
                         justifyContent: "space-between",
                         // backgroundColor: 'red',
-                        left: '14%'
+                        left: "14%",
                       }}
                     >
-                      <View
-                        style={{ flexDirection: "row", }}
-                      >
+                      <View style={{ flexDirection: "row" }}>
                         <MaterialCommunityIcons
                           name="star"
                           size={18}
-                          color='#008bb5'
+                          color="#008bb5"
                         ></MaterialCommunityIcons>
                         <Text style={styles.text}>{teacher.rating}</Text>
                       </View>
-                      <View style={{ flexDirection: "row", }}>
+                      <View style={{ flexDirection: "row" }}>
                         <MaterialIcons
                           name="place"
                           size={18}
-                          color='#008bb5'
+                          color="#008bb5"
                         ></MaterialIcons>
                         <Text style={styles.text}>
                           {getDistanceFromLatLonInKm(
@@ -287,12 +295,7 @@ export default function ListTeachersPage() {
                           km
                         </Text>
                       </View>
-                      <View style={{ flexDirection: "row", }}>
-                        <MaterialIcons
-                          name="attach-money"
-                          size={18}
-                          color='#008bb5'
-                        ></MaterialIcons>
+                      <View style={{ flexDirection: "row" }}>
                         <Text style={styles.text}>Rp.{teacher.price}</Text>
                       </View>
                     </View>
@@ -355,18 +358,18 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   text: {
-    color: '#008bb5',
-    fontSize: 16
+    color: "#008bb5",
+    fontSize: 16,
   },
   text1: {
-    color: '#008bb5',
-    fontWeight: 'bold',
-    fontSize: 18
+    color: "#008bb5",
+    fontWeight: "bold",
+    fontSize: 18,
   },
   scrollView: {
     flex: 1,
-    backgroundColor: 'pink',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "pink",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

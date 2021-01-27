@@ -94,7 +94,7 @@ export default function ChatScreen({route}) {
             {...props}
             wrapperStyle={{
               right: {
-                backgroundColor: 'aqua'
+                backgroundColor: '#008bb5'
               }
             }}
           />
@@ -107,12 +107,12 @@ export default function ChatScreen({route}) {
     }
 
     return (
-        <View style={{ backgroundColor: "#8c8f8d", flex: 1 }}>
+        <View style={{ backgroundColor: "floralwhite", flex: 1 }}>
             <GiftedChat
                 messages={messages}
                 onSend={handleSend}
                 user={user}
-                containerStyle={{ backgroundColor: "black" }}
+                containerStyle={{ backgroundColor: "floralwhite" }}
             />
         </View>
     )

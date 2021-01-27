@@ -28,9 +28,9 @@ export default function App() {
           <Stack.Screen name="Register" options={{headerTransparent: true, title: null}} component={RegisterPage} />
           <Stack.Screen name="Login" options={{headerTransparent: true, title: null}} component={LoginPage} />
           <Stack.Screen name="Order"  options={{headerTransparent: true, title: null}}  component={OrderPage} />
-          <Stack.Screen name="OngoingOrder" component={OngoingOrderPage} />
-          <Stack.Screen name="Payment" component={PaymentPage} />
-          <Stack.Screen name="Chat" component={ChatPage} />
+          <Stack.Screen name="OngoingOrder"  options={{headerTransparent: true, title: null}} component={OngoingOrderPage} />
+          <Stack.Screen name="Payment"  component={PaymentPage} />
+          <Stack.Screen name="Chat"  options={{headerTransparent: true, title: null}} component={ChatPage} />
           <Stack.Screen name="BottomNav" options={{headerTransparent: true, title: null}} component={BottomNav}/>
           <Stack.Screen name="BottomNavTeacher" options={{headerTransparent: true, title: null}} component={BottomNavTeacher}/>
           <Stack.Screen name="EditStudent" options={{headerTransparent: true, title: null}} component={EditStudent}/>

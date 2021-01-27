@@ -125,7 +125,7 @@ export default function HomeTeacherPage() {
       const access_token = await AsyncStorage.getItem("access_token");
 
       axios({
-        url: `http://192.168.0.100:3000/teachers`,
+        url: `http://192.168.1.3:3000/teachers`,
         method: "PATCH",
         headers: {
           access_token: access_token,
