@@ -12,6 +12,7 @@
     "@react-native-community/checkbox": "^0.5.7",
     "@react-native-community/datetimepicker": "3.0.4",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-community/slider": "3.0.3",
     "@react-native-picker/picker": "^1.9.10",
     "@react-navigation/material-bottom-tabs": "^5.3.13",
     "@react-navigation/native": "^5.9.2",
@@ -38,8 +39,8 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-vector-icons": "^8.0.0",
     "react-native-web": "~0.13.12",
-    "react-number-format": "^4.4.4",
-    "react-native-webview": "11.0.0"
+    "react-native-webview": "11.0.0",
+    "react-number-format": "^4.4.4"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

@@ -12,20 +12,40 @@ import { useNavigation } from "@react-navigation/native";
 import Constants from "expo-constants";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
+import axios from "../config/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProfilePage() {
   const [image, setImage] = useState(null);
-  const dataProfile = {
-    name: "Zaidan Ammar",
-    email: "bam@gmail.com",
-    phone: "0812121212",
-  };
+  const [profile, setProfile] = useState([])
+
   const navigate = useNavigation();
+
+  useEffect(() => {
+     getId()
+  },[])
+
+  
+  const getId = async () => {
+    try {
+      const idStudent = await AsyncStorage.getItem('id')
+      Number(idStudent)
+      axios
+        .get(`/students/${idStudent}`)
+        .then(({data}) => {
+          setProfile(data)
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  console.log(profile, '<<<<<')
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-
+    
     (async () => {
       if (Platform.OS !== "web") {
         const {
@@ -65,12 +85,24 @@ export default function ProfilePage() {
       <View style={styles.top}></View>
       <View
         style={{
-          flex: 1,
+          flex: 0.2,
           flexDirection: "row",
           justifyContent: "space-between",
+          // backgroundColor: 'blue'
         }}
       >
-        <Text style={styles.title}>Profile</Text>
+        {/* <Text style={styles.title}>Profile</Text> */}
+        <TouchableHighlight style={{marginTop: Constants.statusBarHeight, left: '7%'}}>
+          <MaterialCommunityIcons
+            style={styles.icon}
+            name="pencil"
+            color="white"
+            size={28}
+            onPress={(e) => {
+              navigate.push("EditStudent", {profile});
+            }} 
+          ></MaterialCommunityIcons>
+        </TouchableHighlight>
         <TouchableHighlight style={{marginTop: Constants.statusBarHeight,  right: '2%'}}>
           <MaterialCommunityIcons
             style={styles.icon}
@@ -84,7 +116,7 @@ export default function ProfilePage() {
         </TouchableHighlight>
       </View>
       <View style={styles.container}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ alignItems: "flex-start", alignSelf: 'center' }}>
           <Image
             source={
               image
@@ -96,14 +128,21 @@ export default function ProfilePage() {
             }
             style={styles.profileImg}
           />
-          <View style={{ justifyContent: "center", marginRight: "28%" }}>
-            <Text style={styles.text}>{dataProfile.name}</Text>
-            <Text style={styles.text2}>{dataProfile.email}</Text>
-            <Text style={styles.text2}>{dataProfile.phone}</Text>
-          </View>
         </View>
-        <Button title="Pick an image from camera roll" onPress={pickImage} />
+          <View style={{ alignSelf: "center" }}>
+            <Text style={styles.title}>{profile.name}</Text>
+          </View>
+          <View style={{ justifyContent: "center", marginHorizontal: '6%', marginVertical: '5%' }}>
+            <Text style={styles.text}>Your Email</Text>
+            <Text style={styles.text2}>{profile.email}</Text>
+            <Text style={styles.text}>Your Phone Number</Text>
+            <Text style={styles.text2}>{profile.phone}</Text>
+            <Text style={styles.text}>Your Adress</Text>
+            <Text style={styles.text2}>{profile.address}</Text>
+          </View>
       </View>
+        <Button title="test edit" onPress={() => navigate.replace('EditStudent', {profile})} />
+        {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
       </>
     
   );
@@ -112,18 +151,15 @@ export default function ProfilePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -480,
-    justifyContent: "space-between",
-    // flexDirection: "row",
-    marginLeft: "5%",
+    justifyContent: "flex-start",
+    top: '-6%',
+    // backgroundColor: 'green'
   },
   profileImg: {
     width: 100,
     height: 100,
     borderRadius: 150 / 2,
     overflow: "hidden",
-    // borderWidth: 3,
-    // borderColor: "red",
   },
   button: {
     alignItems: "center",
@@ -136,13 +172,11 @@ const styles = StyleSheet.create({
     width: "30%",
   },
   title: {
-    // flex: 1,
-    marginTop: "10%",
+    marginTop: "3%",
     marginBottom: "5%",
-    marginLeft: "5%",
-    textAlign: "left",
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
+    // backgroundColor: 'red',
     color: "white",
   },
   icon: {
@@ -159,14 +193,14 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 22,
-    fontWeight: "500",
-    color: "floralwhite",
-    marginBottom: "3%",
+    fontWeight: "bold",
+    color: "#008bb5",
   },
   text2: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "300",
-    color: "floralwhite",
-    marginBottom: "3%",
+    color: "#008bb5",
+    marginBottom: "5%",
+    marginTop: '3%'
   },
 });

@@ -206,6 +206,7 @@ export default function RegisterPage() {
             textAlign="left"
             fontSize={16}
             value={inputData.phone}
+            keyboardType="phone-pad"
           />
           <TextInput
             style={styles.input1}
@@ -334,6 +335,7 @@ export default function RegisterPage() {
             textAlign="left"
             fontSize={16}
             value={inputData.phone}
+            keyboardType="phone-pad"
           />
           <TextInput
             style={styles.input1}
