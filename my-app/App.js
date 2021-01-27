@@ -10,16 +10,15 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage'
 import OngoingOrderPage from './pages/OngoingOrderPage'
 import PaymentPage from './pages/PaymentPage'
+import EditStudent from './pages/EditStudent'
+import EditTeacher from './pages/EditTeacher'
 import ChatPage from './pages/ChatPage'
-
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
 export default function App() {
-
-
 
   return (
     <>
@@ -34,6 +33,8 @@ export default function App() {
           <Stack.Screen name="Chat" component={ChatPage} />
           <Stack.Screen name="BottomNav" options={{headerTransparent: true, title: null}} component={BottomNav}/>
           <Stack.Screen name="BottomNavTeacher" options={{headerTransparent: true, title: null}} component={BottomNavTeacher}/>
+          <Stack.Screen name="EditStudent" options={{headerTransparent: true, title: null}} component={EditStudent}/>
+          <Stack.Screen name="ProfileStudent" options={{headerTransparent: true, title: null}} component={ProfilePage}/>
         </Stack.Navigator>
       </NavigationContainer>
     </>
