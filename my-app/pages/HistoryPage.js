@@ -29,14 +29,19 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import axios from '../config/axiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Rating, AirbnbRating } from 'react-native-ratings';
 
 export default function HomePage() {
   // const [image, setImage] = useState(null);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigation();
+  
 
   useEffect(() => {
-    
+    fetchData()
+  }, [])
+
+  async function fetchData(){
     axios({
       url: '/orders',
       method: 'GET'
@@ -57,23 +62,46 @@ export default function HomePage() {
       console.log(err);
       Alert.alert(err);
     });
-    
-  }, [])
+  }
 
   const goDetail = (id) => {
     console.log(id);
   };
 
+  async function ratingCompleted(rating, data) {
+    console.log("Rating is: " + rating)
+    try {
+      const access_token = await AsyncStorage.getItem("access_token")
+      axios({
+        url: `/orders/${data.id}`,
+        method: 'PUT',
+        headers: {
+          access_token
+        },
+        data: {
+          rating
+        }
+      })
+      .then(data => {
+        fetchData()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
       <View style={styles.top}></View>
       <Text style={styles.title}>History</Text>
+      
+      
       <ScrollView>
         {orders.map(data => (
-          <TouchableOpacity
-            onPress={() => {
-              goDetail(data.id);
-            }}
+          <View
             key={data.id}
             style={styles.card}
           >
@@ -86,11 +114,21 @@ export default function HomePage() {
                     <Text note>{data.Teacher.email}</Text>
                     <Text note>{data.subject}</Text>
                     <Text note>{data.date}</Text>
+                    <View style={{backgroundColor: 'white'}}>
+                    <AirbnbRating
+                      count={5}
+                      onFinishRating={value => ratingCompleted(value, data)}
+                      defaultRating={data.rating}
+                      reviews={[]}
+                      isDisabled={data.rating == 0 ? false : true}
+                      size={25}
+                    />
+                  </View>
                   </Body>
                 </Left>
               </CardItem>
             </Card>
-          </TouchableOpacity>
+          </View>
         ))}
       </ScrollView>
       </>

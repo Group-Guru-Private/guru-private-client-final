@@ -6,6 +6,7 @@ import {
   Image,
   TouchableHighlight,
   Button,
+  Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -15,7 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "../config/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function ProfilePage() {
+export default function ProfilePage({navigation}) {
   const [image, setImage] = useState(null);
   const [profile, setProfile] = useState([])
 
@@ -24,6 +25,13 @@ export default function ProfilePage() {
   useEffect(() => {
      getId()
   },[])
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      Alert.alert('Refreshed');
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   
   const getId = async () => {
@@ -129,7 +137,7 @@ export default function ProfilePage() {
             color="white"
             size={28}
             onPress={(e) => {
-              navigate.replace("EditStudent", {profile});
+              navigate.navigate("EditStudent", {profile});
             }} 
           ></MaterialCommunityIcons>
         </TouchableHighlight>

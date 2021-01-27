@@ -242,10 +242,11 @@ export default function RegisterPage() {
             fontSize={16}
             value={inputData.background}
           />
-          <ScrollView>
             <View style={styles.input2}>
               <SelectMultiple
-                style={{ height: 100, width: 300 }}
+                style={{ height: "100%", width: 200 }}
+                rowStyle={{backgroundColor: "floralwhite"}}
+                
                 items={subjects}
                 selectedItems={selectedSubject}
                 onSelectionsChange={(e) => {
@@ -253,7 +254,6 @@ export default function RegisterPage() {
                 }}
               />
             </View>
-          </ScrollView>
           <TouchableHighlight
             style={[styles.button, styles.test]}
             onPress={register}
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   },
   input1: {
     marginTop: "4%",
-    height: "7.5%",
+    height: "6%",
     width: "80%",
     borderRadius: 30,
     justifyContent: "center",
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
   },
   input2: {
     marginTop: "4%",
-    height: "20%",
+    height: "10%",
     width: "80%",
     borderRadius: 30,
     justifyContent: "center",

@@ -17,10 +17,9 @@ import axios from "../config/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-export default function ProfilePage() {
+export default function ProfilePage({navigation}) {
   const [image, setImage] = useState(null);
   const [profile, setProfile] = useState([]);
-  console.log(profile.price);
   const navigate = useNavigation();
 
   useEffect(() => {
@@ -38,6 +37,14 @@ export default function ProfilePage() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getId()
+    });
+    return unsubscribe;
+  }, [navigation]);
+
 
   const convertRupiah = (price) => {
     const numberString = price.toString()
@@ -134,14 +141,7 @@ export default function ProfilePage() {
       <View style={styles.container}>
         <View style={{ alignItems: "flex-start", alignSelf: "center" }}>
           <Image
-            source={
-              image
-                ? { uri: image }
-                : {
-                    uri:
-                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                  }
-            }
+            source={{ uri: profile.image_url}}
             style={styles.profileImg}
           />
         </View>
