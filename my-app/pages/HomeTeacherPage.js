@@ -80,9 +80,13 @@ const photo = [
   },
 ];
 
+
+
+
 export default function HomeTeacherPage() {
   const [isEnabled, setIsEnabled] = useState();
   const [orders, setOrders] = useState([]);
+  const navigation = useNavigation()
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -96,7 +100,7 @@ export default function HomeTeacherPage() {
         try {
           const asyncId = await AsyncStorage.getItem("id");
           const filteredData = data.filter((el) => {
-            return el.TeacherId == asyncId;
+            return el.TeacherId == asyncId && el.status == false;
           });
           console.log(filteredData);
           setOrders(filteredData);
@@ -162,9 +166,19 @@ export default function HomeTeacherPage() {
     }
   }
 
+  const goChat = async (item) => {
+    const userId = await AsyncStorage.getItem('id')
+    const username = await AsyncStorage.getItem('name')
+    navigation.push('Chat', {
+      userId: `teacher${userId}`,
+      name: username,
+      roomId: item.id
+    })
+  }
+
   const goDetail = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => console.log("oke")}>
+      <TouchableOpacity onPress={e => {goChat(item)}}>
         <View
           style={{
             height: 250,

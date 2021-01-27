@@ -29,6 +29,16 @@ export default function OngoingOrderPage({navigation, route}) {
         distancePrice: 30000
     }
 
+    const goChat = async () => {
+      const userId = await AsyncStorage.getItem('id')
+      const username = await AsyncStorage.getItem('name')
+      navigate.push('Chat', {
+        roomId: orderId,
+        userId: `student${userId}`,
+        name: username
+      })
+    }
+
     return (
       <LinearGradient
       // Background Linear Gradient
@@ -56,6 +66,9 @@ export default function OngoingOrderPage({navigation, route}) {
                 style={styles.containerbot}
             >
             <TouchableHighlight style={styles.button} onPress={e => {navigate.push('Payment', { orderId: orderId })}}>
+              <Text>Payment</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.button} onPress={goChat}>
               <Text>Chat</Text>
             </TouchableHighlight>
         </View>
