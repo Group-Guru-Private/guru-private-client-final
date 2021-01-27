@@ -105,7 +105,10 @@ export default function EditStudent({ route }) {
           style={{ marginTop: Constants.statusBarHeight, right: "2%" }}
           onPress={(e) => {
             getAccessToken();
-            navigate.push("BottomNav");
+            navigate.navigate({
+              routes: 'BottomNav',
+              action: navigate.push({ routesName: 'History' }),
+            });
           }}
         >
           <Text style={styles.text1}>Save</Text>
