@@ -2,66 +2,49 @@ import React, { useState, useEffect } from "react";
 import {
   Image,
   StyleSheet,
-  TouchableOpacity,
   View,
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import LandingPage from "./LandingPage";
-import LoginPage from "./LoginPage";
 import Constants from "expo-constants";
-import {
-  Container,
-  Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Body,
-  Icon,
-  Right,
-  Text,
-  Left,
-  Header,
-  Button,
-  Title
-} from "native-base";
+import { Card, CardItem, Text } from "native-base";
 import { useNavigation } from "@react-navigation/native";
-import axios from '../config/axiosInstance'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import axios from "../config/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Rating, AirbnbRating } from "react-native-ratings";
 
 export default function HomePage() {
   // const [image, setImage] = useState(null);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigation();
-  
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
-  async function fetchData(){
+  async function fetchData() {
     axios({
-      url: '/orders',
-      method: 'GET'
+      url: "/orders",
+      method: "GET",
     })
-    .then(async ({ data }) => {
-      try {
-        const asyncId = await AsyncStorage.getItem("id");
-        const filteredData = data.filter((el) => {
-          return el.StudentId == asyncId && el.status == true;
-        });
-        const sorted = filteredData.sort((a, b) => new Date(b.date) - new Date(a.date))
-        setOrders(sorted)
-      } catch (error) {
-        console.log(error);
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      Alert.alert(err);
-    });
+      .then(async ({ data }) => {
+        try {
+          const asyncId = await AsyncStorage.getItem("id");
+          const filteredData = data.filter((el) => {
+            return el.StudentId == asyncId && el.status == true;
+          });
+          const sorted = filteredData.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+          setOrders(sorted);
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert(err);
+      });
   }
 
   const goDetail = (id) => {
@@ -69,27 +52,27 @@ export default function HomePage() {
   };
 
   async function ratingCompleted(rating, data) {
-    console.log("Rating is: " + rating)
+    console.log("Rating is: " + rating);
     try {
-      const access_token = await AsyncStorage.getItem("access_token")
+      const access_token = await AsyncStorage.getItem("access_token");
       axios({
         url: `/orders/${data.id}`,
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          access_token
+          access_token,
         },
         data: {
-          rating
-        }
+          rating,
+        },
       })
-      .then(data => {
-        fetchData()
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then((data) => {
+          fetchData();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -97,41 +80,89 @@ export default function HomePage() {
     <>
       <View style={styles.top}></View>
       <Text style={styles.title}>History</Text>
-      
-      
+
       <ScrollView>
-        {orders.map(data => (
-          <View
-            key={data.id}
-            style={styles.card}
-          >
+        {orders.map((data) => (
+          <View key={data.id} style={styles.card}>
             <Card style={{ borderRadius: 20 }}>
               <CardItem style={styles.borderTop}>
-                <Left>
-                  <Thumbnail />
-                  <Body>
-                    <Text>{data.Teacher.name}</Text>
-                    <Text note>{data.Teacher.email}</Text>
-                    <Text note>{data.subject}</Text>
-                    <Text note>{data.date}</Text>
-                    <View style={{backgroundColor: 'white'}}>
+                <View
+                  style={{
+                    // backgroundColor: "red",
+                    // alignItems: "center",
+                    width: "100%",
+                  }}
+                  >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      // alignSelf: 'flex-start',
+                      // backgroundColor: "blue",
+                      // alignItems: "center",
+                      justifyContent: "space-between",
+                      width: '100%'
+                    }}
+                  >
+                    <Image
+                      source={
+                        data.image_url
+                          ? { uri: data.image_url }
+                          : {
+                              uri:
+                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                            }
+                      }
+                      style={styles.profileImg}
+                    ></Image>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        flexDirection: "column",
+                        // backgroundColor: 'red',
+                        left: '-48%',
+                        top: '3%'
+
+                      }}
+                    >
+                      <Text>{data.Teacher.name}</Text>
+                      <Text note>{data.subject}</Text>
+                    </View>
+                    <Text
+                      note
+                      style={{
+                        // backgroundColor: "green",
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      {data.date}
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      // backgroundColor: "orange",
+                      height: 15,
+                      justifyContent: "flex-end",
+                      alignSelf: "flex-end",
+                      marginBottom: '5%'
+                    }}
+                  >
                     <AirbnbRating
                       count={5}
-                      onFinishRating={value => ratingCompleted(value, data)}
+                      onFinishRating={(value) => ratingCompleted(value, data)}
                       defaultRating={data.rating}
                       reviews={[]}
                       isDisabled={data.rating == 0 ? false : true}
-                      size={25}
+                      size={22}
                     />
                   </View>
-                  </Body>
-                </Left>
+                </View>
               </CardItem>
             </Card>
           </View>
         ))}
       </ScrollView>
-      </>
+    </>
   );
 }
 
@@ -140,8 +171,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: Constants.statusBarHeight,
   },
+  profileImg: {
+    width: 75,
+    height: 75,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+    top: '3%'
+  },
   top: {
-    // top: "-5%",
     width: "100%",
     height: "35%",
     backgroundColor: "#008bb5",
@@ -150,7 +187,6 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   title: {
-    // flex: 1,
     marginTop: "10%",
     marginBottom: "5%",
     marginLeft: "5%",
@@ -160,20 +196,18 @@ const styles = StyleSheet.create({
     color: "white",
   },
   card: {
-    marginLeft: "3%",
-    marginRight: "3%",
+    marginHorizontal: "3%",
     borderRadius: 100,
   },
   borderTop: {
-    //  backgroundColor: "#008bb5",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
+    backgroundColor: "floralwhite",
   },
-  borderBot: {
-    // backgroundColor: "#008bb5",
-    borderBottomRightRadius: 15,
-    borderBottomLeftRadius: 15,
-  },
+  // borderBot: {
+  //   borderBottomRightRadius: 15,
+  //   borderBottomLeftRadius: 15,
+  // },
 });

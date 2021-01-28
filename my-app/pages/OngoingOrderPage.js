@@ -95,7 +95,7 @@ export default function OngoingOrderPage({ navigation, route }) {
             size={48}
             color="#008bb5"
           ></MaterialCommunityIcons>
-          <Text style={styles.text}>{teacher.rating}</Text>
+          <Text style={styles.text}>{teacher.rating.toFixed(1)}</Text>
         </View>
       </View>
       <View style={styles.containerbot}>

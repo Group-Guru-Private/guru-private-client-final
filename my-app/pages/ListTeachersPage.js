@@ -190,6 +190,18 @@ export default function ListTeachersPage() {
     return d;
   }
 
+  const convertRupiah = (price) => {
+    const numberString = price.toString();
+    const sisa = numberString.length % 3;
+    var rupiah = numberString.substr(0, sisa);
+    const ribuan = numberString.substr(sisa).match(/\d{3}/g);
+    if (ribuan) {
+      const separator = sisa ? "." : "";
+      rupiah += separator + ribuan.join(".");
+    }
+    return rupiah;
+  };
+
   if (loading)
     return <View style={{ marginTop: Constants.statusBarHeight }}></View>;
   else {
@@ -232,7 +244,7 @@ export default function ListTeachersPage() {
               key={teacher.id}
               style={styles.card}
             >
-              <Card style={{ borderRadius: 20 }}>
+              <Card style={{ borderRadius: 20, }}>
                 <CardItem style={styles.borderTop}>
                   <View>
                     <View
@@ -277,7 +289,7 @@ export default function ListTeachersPage() {
                           size={18}
                           color="#008bb5"
                         ></MaterialCommunityIcons>
-                        <Text style={styles.text}>{teacher.rating}</Text>
+                        <Text style={styles.text}>{teacher.rating.toFixed(1)}</Text>
                       </View>
                       <View style={{ flexDirection: "row" }}>
                         <MaterialIcons
@@ -291,12 +303,12 @@ export default function ListTeachersPage() {
                             positionStudent[1],
                             teacher.position[0],
                             teacher.position[1]
-                          ).toFixed(2)}{" "}
+                          ).toFixed(1)}{" "}
                           km
                         </Text>
                       </View>
                       <View style={{ flexDirection: "row" }}>
-                        <Text style={styles.text}>Rp.{teacher.price}</Text>
+                        <Text style={styles.text}>Rp.{convertRupiah(teacher.price)}</Text>
                       </View>
                     </View>
                   </View>
@@ -345,6 +357,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
+    elevation: 4
   },
   borderBot: {
     // backgroundColor: "#008bb5",
