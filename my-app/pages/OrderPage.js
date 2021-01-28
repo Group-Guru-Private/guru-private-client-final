@@ -154,7 +154,7 @@ export default function OrderPage({ navigation, route }) {
                   color="white"
                   style={{paddingRight: '1%'}}
                 ></MaterialCommunityIcons>
-                <Text style={styles.text3}>{teacher.rating}</Text>
+                <Text style={styles.text3}>{teacher.rating.toFixed(1)}</Text>
               </View>
             </View>
           </View>

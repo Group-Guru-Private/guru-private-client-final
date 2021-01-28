@@ -80,13 +80,10 @@ const photo = [
   },
 ];
 
-
-
-
 export default function HomeTeacherPage() {
   const [isEnabled, setIsEnabled] = useState();
   const [orders, setOrders] = useState([]);
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -167,18 +164,22 @@ export default function HomeTeacherPage() {
   }
 
   const goChat = async (item) => {
-    const userId = await AsyncStorage.getItem('id')
-    const username = await AsyncStorage.getItem('name')
-    navigation.push('Chat', {
+    const userId = await AsyncStorage.getItem("id");
+    const username = await AsyncStorage.getItem("name");
+    navigation.push("Chat", {
       userId: `teacher${userId}`,
       name: username,
-      roomId: item.id
-    })
-  }
+      roomId: item.id,
+    });
+  };
 
   const goDetail = ({ item }) => {
     return (
-      <TouchableOpacity onPress={e => {goChat(item)}}>
+      <TouchableOpacity
+        onPress={(e) => {
+          goChat(item);
+        }}
+      >
         <View
           style={{
             height: 250,
@@ -238,13 +239,21 @@ export default function HomeTeacherPage() {
       </View>
     );
   };
+  
 
   const SLIDER_WIDTH = Dimensions.get("window").width;
 
   return (
-    <SafeAreaView style={styles.container}>
+    // <SafeAreaView style={styles.container}>
+    <>
       <View style={styles.top}></View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // backgroundColor: "red",
+        }}
+      >
         <Title style={styles.title}>Hello!</Title>
         <Switch
           style={{ right: "10%", top: "5%" }}
@@ -257,7 +266,7 @@ export default function HomeTeacherPage() {
           value={isEnabled}
         />
       </View>
-      <Text style={{ fontSize: 20, color: "white", marginLeft: "6%" }}>
+      <Text style={{ fontSize: 26, color: "white", fontWeight: "bold", marginLeft: "5%" }}>
         Pak Agus
       </Text>
       <View
@@ -297,7 +306,8 @@ export default function HomeTeacherPage() {
           renderItem={goSquare}
         ></Carousel>
       </View>
-    </SafeAreaView>
+    </>
+    // </SafeAreaView>
   );
 }
 
@@ -315,14 +325,11 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   title: {
-    // flex: 1,
-    marginTop: "10%",
-    marginBottom: "2%",
-    marginLeft: "5%",
-    textAlign: "left",
-    fontSize: 32,
-    fontWeight: "500",
+    fontSize: 20,
     color: "white",
+    marginLeft: "5%",
+    marginTop: "10%",
+    fontWeight: "200",
   },
   card: {
     marginLeft: "3%",

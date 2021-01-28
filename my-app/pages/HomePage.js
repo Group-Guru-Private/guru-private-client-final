@@ -110,6 +110,7 @@ export default function HomePage() {
             justifyContent: "space-between",
             backgroundColor: "floralwhite",
             borderRadius: 20,
+            elevation: 12
           }}
         >
           <View style={{ alignSelf: "flex-start" }}>
@@ -238,6 +239,7 @@ export default function HomePage() {
             padding: 10,
             backgroundColor: "floralwhite",
             borderRadius: 20,
+            elevation: 12
           }}
         >
           <View
@@ -309,7 +311,7 @@ export default function HomePage() {
                 style={{ top: "5%" }}
               ></MaterialCommunityIcons>
               <Text style={{ fontSize: 14, color: "#008bb5" }}>
-                {item.rating}
+                {item.rating.toFixed(1)}
               </Text>
             </View>
 
@@ -319,9 +321,7 @@ export default function HomePage() {
               </Text>
             </View>
           </View>
-          {/* <View>
-            <Text style={{ fontSize: 16 }}>{item.address}</Text>
-          </View> */}
+ 
         </View>
       </TouchableOpacity>
     );
@@ -418,6 +418,7 @@ export default function HomePage() {
           flex: 1,
           flexDirection: "row",
           marginLeft: "-20%",
+          // alignItems: 'flex-start',
           bottom: "-6%",
         }}
       >
