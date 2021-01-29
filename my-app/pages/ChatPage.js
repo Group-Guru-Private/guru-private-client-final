@@ -92,11 +92,11 @@ export default function ChatScreen({route}) {
         return (
           <Bubble
             {...props}
-            wrapperStyle={{
-              right: {
-                backgroundColor: '#008bb5'
-              }
-            }}
+            textStyle={{
+                right: {
+                  color: "black"
+                }}
+            }
           />
         )
       }
@@ -113,6 +113,7 @@ export default function ChatScreen({route}) {
                 onSend={handleSend}
                 user={user}
                 containerStyle={{ backgroundColor: "floralwhite" }}
+                
             />
         </View>
     )

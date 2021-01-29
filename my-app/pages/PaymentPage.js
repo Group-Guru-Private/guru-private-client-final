@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {WebView} from 'react-native-webview'
-import {View, Text, ActivityIndicator} from 'react-native'
+import {View, Text, ActivityIndicator, Alert} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import axios from '../config/axiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -88,7 +88,7 @@ export default function PaymentPage ({nav, route}) {
 
   const onMessage = (event) => {
     const { data } =  event.nativeEvent;
-    alert(data)
+    Alert.alert('Success to Pay')
     navigation.reset({
       index: 0,
       routes: [{ name: 'BottomNav' }],

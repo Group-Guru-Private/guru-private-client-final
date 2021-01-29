@@ -361,7 +361,7 @@ export default function RegisterPage() {
             </Picker>
           </View>
           <TouchableHighlight style={styles.button} onPress={register}>
-            <Text style={{ color: "floralwhite" }}>Register</Text>
+            <Text style={{ color: "black" }}>Register</Text>
           </TouchableHighlight>
         </View>
         <TouchableOpacity onPress={() => navigation.replace("Login")}>

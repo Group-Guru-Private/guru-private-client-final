@@ -92,7 +92,7 @@ export default function HomePage() {
   }, []);
 
   const goDetail = ({ item }) => {
-    // console.log(item, '<<<<<')
+    
     return (
       <TouchableOpacity
         onPress={() =>
@@ -100,6 +100,7 @@ export default function HomePage() {
             teacher: item.Teacher,
             subject: item.subject,
             orderId: item.id,
+            orderDate: item.date
           })
         }
       >
@@ -231,7 +232,7 @@ export default function HomePage() {
 
   const goSquare = ({ item, index }) => {
     return (
-      <TouchableOpacity onPress={() => goOrder(item)}>
+      <View>
         <View
           style={{
             height: 215,
@@ -323,7 +324,7 @@ export default function HomePage() {
           </View>
  
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -426,7 +427,7 @@ export default function HomePage() {
           layout={"default"}
           sliderWidth={SLIDER_WIDTH}
           data={topTeachers}
-          itemWidth={200}
+          itemWidth={172}
           renderItem={goSquare}
           firstItem={0}
         ></Carousel>

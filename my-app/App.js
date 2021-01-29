@@ -13,6 +13,8 @@ import PaymentPage from './pages/PaymentPage'
 import EditStudent from './pages/EditStudent'
 import EditTeacher from './pages/EditTeacher'
 import ChatPage from './pages/ChatPage'
+import TeacherOngoingOrderPage from './pages/TeacherOngoingOrderPage'
+
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -36,6 +38,7 @@ export default function App() {
           <Stack.Screen name="EditStudent" options={{headerTransparent: true, title: null}} component={EditStudent}/>
           <Stack.Screen name="EditTeacher" options={{headerTransparent: true, title: null}} component={EditTeacher}/>
           <Stack.Screen name="ProfileStudent" options={{headerTransparent: true, title: null}} component={ProfilePage}/>
+          <Stack.Screen name="TeacherOngoingOrder" options={{headerTransparent: true, title: null}} component={TeacherOngoingOrderPage}/>
         </Stack.Navigator>
       </NavigationContainer>
     </>

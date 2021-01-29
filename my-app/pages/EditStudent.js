@@ -120,19 +120,19 @@ export default function EditStudent({ route }) {
         </View>
       </View>
       <View style={{ marginHorizontal: "5%", top: '2%', marginTop: '20%' }}>
-        <Text style={styles.text}>Your Name</Text>
+        <Text style={styles.text}>Name</Text>
         <TextInput
           value={newProfile.name}
           onChangeText={(value) => handleChange(value, "name")}
           style={styles.input}
         ></TextInput>
-        <Text style={styles.text}>Your Address</Text>
+        <Text style={styles.text}>Address</Text>
         <TextInput
           value={newProfile.address}
           onChangeText={(value) => handleChange(value, "address")}
           style={styles.input}
         ></TextInput>
-        <Text style={styles.text}>Your Phone Number</Text>
+        <Text style={styles.text}>Phone Number</Text>
         <TextInput
           value={newProfile.telpon_number}
           onChangeText={(value) => handleChange(value, "telpon_number")}
