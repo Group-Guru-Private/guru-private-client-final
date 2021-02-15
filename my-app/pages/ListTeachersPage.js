@@ -56,7 +56,7 @@ export default function ListTeachersPage() {
   const allSubjects = [
     "Mathematics",
     "English",
-    "Chemisty",
+    "Chemistry",
     "Physics",
     "Biology",
     "Bahasa Indonesia",
@@ -280,7 +280,8 @@ export default function ListTeachersPage() {
                         marginVertical: "5%",
                         justifyContent: "space-between",
                         // backgroundColor: 'red',
-                        left: "14%",
+                        left: "15%",
+                        width: "80%"
                       }}
                     >
                       <View style={{ flexDirection: "row" }}>

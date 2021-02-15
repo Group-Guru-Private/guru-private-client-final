@@ -156,17 +156,17 @@ export default function ProfilePage({navigation}) {
               marginVertical: "5%",
             }}
           >
-            <Text style={styles.text}>Your Email</Text>
+            <Text style={styles.text}>Email</Text>
             <Text style={styles.text2}>{profile.email}</Text>
-            <Text style={styles.text}>Your Phone Number</Text>
+            <Text style={styles.text}>Phone Number</Text>
             <Text style={styles.text2}>{profile.telpon_number}</Text>
-            <Text style={styles.text}>Your Address</Text>
+            <Text style={styles.text}>Address</Text>
             <Text style={styles.text2}>{profile.address}</Text>
-            <Text style={styles.text}>Your Background</Text>
+            <Text style={styles.text}>Background</Text>
             <Text style={styles.text2}>{profile.background}</Text>
-            <Text style={styles.text}>Your Price</Text>
+            <Text style={styles.text}>Price</Text>
             <Text style={styles.text2}>{profile.price}</Text>
-            <Text style={styles.text}>Your Position</Text>
+            <Text style={styles.text}>Position</Text>
             <Text style={styles.text2}>{profile.position}</Text>
           </View>
         </ScrollView>

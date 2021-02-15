@@ -19,46 +19,20 @@ import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import axios from '../config/axiosInstance'
 
-export default function OngoingOrderPage({ navigation, route }) {
-  const { teacher, subject, orderId, orderDate} = route.params;
+export default function TeacherOngoingOrderPage({ navigation, route }) {
+  const { teacher, subject, orderId, student, orderDate } = route.params;
   const navigate = useNavigation();
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
 
   const goChat = async () => {
     const userId = await AsyncStorage.getItem("id");
     const username = await AsyncStorage.getItem("name");
     navigate.push("Chat", {
       roomId: orderId,
-      userId: `student${userId}`,
+      userId: `teacher${userId}`,
       name: username,
     });
   };
-
-  const goCancel = async () => {
-    const userId = await AsyncStorage.getItem("id");
-    const access_token = await AsyncStorage.getItem("access_token");
-    axios({
-      url: `/orders/${orderId}`,
-      method: 'DELETE',
-      headers: {
-        access_token
-      }
-    })
-    .then(data => {
-      Alert.alert('Success to Cancel')
-      navigate.reset({
-        index: 0,
-        routes: [{ name: 'BottomNav' }],
-      });
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
 
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the earth in km
@@ -85,7 +59,7 @@ export default function OngoingOrderPage({ navigation, route }) {
       <View style={styles.container}>
         <Image
           source={{
-            uri: teacher.image_url,
+            uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
           }}
           style={styles.profileImg}
         />
@@ -96,8 +70,8 @@ export default function OngoingOrderPage({ navigation, route }) {
             // backgroundColor: "green",
           }}
         >
-          <Text style={styles.title}>{teacher.name}</Text>
-          <Text style={styles.subtitle}>{teacher.email}</Text>
+          <Text style={styles.title}>{student.name}</Text>
+          <Text style={styles.subtitle}>{student.email}</Text>
         </View>
 
         <View>{/* <Text>{teacher.background}</Text> */}</View>
@@ -106,19 +80,11 @@ export default function OngoingOrderPage({ navigation, route }) {
       <View style={{top: "10%"}}>
         <View style={styles.div}>
           <MaterialIcons name="place" size={35} color="#008bb5"></MaterialIcons>
-          <Text style={styles.text}>{teacher.address}</Text>
+          <Text style={styles.text}>{student.address}</Text>
         </View>
         <View style={styles.div}>
           <Entypo name="book" size={35} color="#008bb5"></Entypo>
           <Text style={styles.text}>{subject}</Text>
-        </View>
-        <View style={styles.div}>
-          <MaterialCommunityIcons
-            name="star"
-            size={35}
-            color="#008bb5"
-          ></MaterialCommunityIcons>
-          <Text style={styles.text}>{teacher.rating.toFixed(1)}</Text>
         </View>
         <View style={styles.div}>
           <MaterialIcons
@@ -126,7 +92,7 @@ export default function OngoingOrderPage({ navigation, route }) {
             size={35}
             color="#008bb5"
           ></MaterialIcons>
-          <Text style={styles.text}>{teacher.telpon_number}</Text>
+          <Text style={styles.text}>{student.telpon_number}</Text>
         </View>
         <View style={styles.div}>
           <Fontisto
@@ -138,22 +104,9 @@ export default function OngoingOrderPage({ navigation, route }) {
         </View>
       </View>
       <View style={styles.containerbot}>
-        <View style={{flexDirection: 'row', top: "10%", justifyContent: 'space-evenly'}}>
           <TouchableHighlight style={styles.button1} onPress={goChat}>
             <Text style={styles.textBtn1}>Chat</Text>
           </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={(e) => {
-              navigate.push("Payment", { orderId: orderId });
-            }}
-          >
-            <Text style={styles.textBtn}>Payment</Text>
-          </TouchableHighlight>
-        </View>
-        <TouchableHighlight style={styles.button2} onPress={goCancel}>
-            <Text style={styles.textBtn2}>Cancel Order</Text>
-        </TouchableHighlight>
       </View>
     </LinearGradient>
   );
@@ -177,9 +130,9 @@ const styles = StyleSheet.create({
   containerbot: {
     flex: 0.9,
     justifyContent: "flex-end",
-    bottom: "6%"
-    //backgroundColor: 'orange',
-    // alignContent: 'center',
+    bottom: "6%",
+    width: "100%",
+    alignItems: 'center'
   },
   button: {
     alignItems: "center",
@@ -194,8 +147,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#008bb5",
     borderRadius: 30,
-    width: "40%",
-    height: "50%",
+    marginHorizontal: "10%",
+    width: "50%",
+    height: "15%",
     justifyContent: "center",
     elevation: 5,
     shadowOpacity: 0.5,

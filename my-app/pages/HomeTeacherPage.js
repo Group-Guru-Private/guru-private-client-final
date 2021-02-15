@@ -34,6 +34,9 @@ import { useNavigation } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
 import axios from "../config/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Entypo from "react-native-vector-icons/Entypo";
+import Fontisto from "react-native-vector-icons/Fontisto";
 
 const photo = [
   {
@@ -80,10 +83,40 @@ const photo = [
   },
 ];
 
-export default function HomeTeacherPage() {
+export default function HomeTeacherPage({navigation}) {
   const [isEnabled, setIsEnabled] = useState();
   const [orders, setOrders] = useState([]);
-  const navigation = useNavigation();
+  const [history, setHistory] = useState([])
+  const [name, setName] = useState([])
+  const navigate = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      axios
+      .get("/orders")
+      .then(async ({ data }) => {
+        try {
+          const asyncId = await AsyncStorage.getItem("id");
+          const filteredData = data.filter((el) => {
+            return el.TeacherId == asyncId && el.status == false;
+          });
+          const filteredByHistory = data.filter((el) => {
+            return el.TeacherId == asyncId && el.status == true;
+          });
+          const sorted = filteredByHistory.sort((a, b) => new Date(a.date) - new Date(b.date))
+          setHistory(sorted);
+          setOrders(filteredData);
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert(err);
+      });
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -99,7 +132,11 @@ export default function HomeTeacherPage() {
           const filteredData = data.filter((el) => {
             return el.TeacherId == asyncId && el.status == false;
           });
-          console.log(filteredData);
+          const filteredByHistory = data.filter((el) => {
+            return el.TeacherId == asyncId && el.status == true;
+          });
+          const sorted = filteredByHistory.sort((a, b) => new Date(a.date) - new Date(b.date))
+          setHistory(sorted);
           setOrders(filteredData);
         } catch (error) {
           console.log(error);
@@ -122,7 +159,7 @@ export default function HomeTeacherPage() {
       const access_token = await AsyncStorage.getItem("access_token");
 
       axios({
-        url: `http://192.168.1.3:3000/teachers`,
+        url: `/teachers/`,
         method: "PATCH",
         headers: {
           access_token: access_token,
@@ -149,6 +186,8 @@ export default function HomeTeacherPage() {
   async function getDataById() {
     try {
       const value = await AsyncStorage.getItem("id");
+      const name = await AsyncStorage.getItem("name")
+      setName(name)
 
       axios
         .get(`/teachers/${value}`)
@@ -166,7 +205,7 @@ export default function HomeTeacherPage() {
   const goChat = async (item) => {
     const userId = await AsyncStorage.getItem("id");
     const username = await AsyncStorage.getItem("name");
-    navigation.push("Chat", {
+    navigate.push("TeacherOngoingOrderPage", {
       userId: `teacher${userId}`,
       name: username,
       roomId: item.id,
@@ -176,46 +215,113 @@ export default function HomeTeacherPage() {
   const goDetail = ({ item }) => {
     return (
       <TouchableOpacity
-        onPress={(e) => {
-          goChat(item);
-        }}
+        onPress={() =>
+        navigate.push("TeacherOngoingOrder", {
+          teacher: item.Teacher,
+          student: item.Student,
+          subject: item.subject,
+          orderId: item.id,
+          orderDate: item.date
+        })
+      }
       >
         <View
           style={{
-            height: 250,
-            padding: 10,
-            alignItems: "center",
-            justifyContent: "center",
+            height: 240,
+            paddingHorizontal: 10,
+            justifyContent: "space-between",
             backgroundColor: "floralwhite",
             borderRadius: 20,
+            elevation: 12
           }}
         >
-          <Text
+          <View style={{ alignSelf: "flex-start" }}>
+            <Text
+              style={{
+                // left: "-25%",
+                marginVertical: "5%",
+                fontSize: 20,
+                fontWeight: "bold",
+                color: "#008bb5",
+              }}
+            >
+              Ongoing Course
+            </Text>
+          </View>
+
+          <View
             style={{
-              left: "-30%",
-              top: "-20%",
-              fontSize: 20,
-              fontWeight: "bold",
+              flexDirection: "row",
+              marginHorizontal: "4%",
+              // backgroundColor: "green",
             }}
           >
-            Ongoing Order
-          </Text>
-          <View style={{ flexDirection: "row" }}>
             <Image
               source={{
-                uri:
-                  "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg",
+                uri: "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg",
               }}
-              style={styles.profileImg}
+              style={styles.profileImg2}
             />
-            <View>
-              <Text style={{ fontSize: 13 }}>Name: {item.Student.name}</Text>
-              <Text style={{ fontSize: 13 }}>Subject: {item.subject}</Text>
-              <Text style={{ fontSize: 13 }}>
-                Address: {item.Student.address}
+            <View style={{ marginLeft: "4%", alignSelf: "center" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "#008bb5",
+                  marginLeft: "1%",
+                }}
+              >
+                {item.Student.name}
               </Text>
-              <Text style={{ fontSize: 13 }}>
-                Date: {new Date(item.date).toLocaleDateString()}
+              <Text
+                style={{ fontSize: 13, color: "#008bb5", marginLeft: "1%" }}
+              >
+                {item.Student.email}
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginVertical: "3%",
+              // backgroundColor: "orange",
+            }}
+          >
+            <View style={{ alignItems: "center" }}>
+              <MaterialCommunityIcons
+                name="phone"
+                size={30}
+                color="#008bb5"
+              ></MaterialCommunityIcons>
+              <Text
+                style={{ fontSize: 12, color: "#008bb5", fontWeight: "bold" }}
+              >
+                {item.Student.telpon_number}
+              </Text>
+            </View>
+
+            <View style={{ alignItems: "center" }}>
+              <Entypo name="book" size={30} color="#008bb5"></Entypo>
+              <Text
+                style={{ fontSize: 12, color: "#008bb5", fontWeight: "bold" }}
+              >
+                {item.subject}
+              </Text>
+            </View>
+
+            <View style={{ alignItems: "center" }}>
+              <Fontisto
+                name="date"
+                size={28}
+                color="#008bb5"
+                style={{ marginBottom: "5%" }}
+              ></Fontisto>
+              <Text
+                style={{ fontSize: 12, color: "#008bb5", fontWeight: "bold" }}
+              >
+                {item.date}
               </Text>
             </View>
           </View>
@@ -226,21 +332,89 @@ export default function HomeTeacherPage() {
 
   const goSquare = ({ item }) => {
     return (
-      <View
-        style={{
-          height: 150,
-          padding: 10,
-          justifyContent: "center",
-          backgroundColor: "floralwhite",
-          borderRadius: 20,
-        }}
-      >
-        <Text style={{ fontSize: 20 }}>{item.title}</Text>
+      <View>
+        <View
+          style={{
+            height: 215,
+            width: 160,
+            padding: 10,
+            backgroundColor: "floralwhite",
+            borderRadius: 20,
+            elevation: 12
+          }}
+        >
+          <View
+            style={{
+              // backgroundColor: "red",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginVertical: "3%",
+              alignSelf: "center",
+            }}
+          >
+            <Image
+              source={{
+                uri: "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg",
+              }}
+              style={styles.profileImg}
+            ></Image>
+          </View>
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "bold",
+                color: "#008bb5",
+              }}
+            >
+              {item.Student.name}
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                alignSelf: "center",
+                color: "#008bb5",
+              }}
+            >
+              {item.subject}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: "15%",
+              // backgroundColor: "brown",
+              justifyContent: "space-between",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="star"
+                size={16}
+                color="#008bb5"
+                style={{ top: "5%" }}
+              ></MaterialCommunityIcons>
+              <Text style={{ fontSize: 14, color: "#008bb5" }}>
+                {item.rating}
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 14, color: "#008bb5" }}>
+               {item.date}
+              </Text>
+            </View>
+          </View>
+ 
+        </View>
       </View>
     );
   };
   
-
   const SLIDER_WIDTH = Dimensions.get("window").width;
 
   return (
@@ -258,7 +432,7 @@ export default function HomeTeacherPage() {
         <Switch
           style={{ right: "10%", top: "5%" }}
           trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+          thumbColor={isEnabled ? "#008bb5" : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
           onValueChange={(value) => {
             toggleSwitch(value);
@@ -267,7 +441,7 @@ export default function HomeTeacherPage() {
         />
       </View>
       <Text style={{ fontSize: 26, color: "white", fontWeight: "bold", marginLeft: "5%" }}>
-        Pak Agus
+        {name}
       </Text>
       <View
         style={{
@@ -286,9 +460,9 @@ export default function HomeTeacherPage() {
         ></Carousel>
       </View>
       <Text
-        style={{ fontSize: 26, color: "#48bcae", marginLeft: "5%", top: "5%" }}
+        style={{ fontSize: 26, color: "#48bcae", marginLeft: "5%", top: "5%", fontWeight: 'bold' }}
       >
-        List Students
+        History
       </Text>
       <View
         style={{
@@ -301,7 +475,7 @@ export default function HomeTeacherPage() {
         <Carousel
           layout={"default"}
           sliderWidth={SLIDER_WIDTH}
-          data={photo}
+          data={history}
           itemWidth={200}
           renderItem={goSquare}
         ></Carousel>
@@ -356,4 +530,10 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "red",
   },
+  profileImg2: {
+    width: 90,
+    height: 90,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+  }
 });

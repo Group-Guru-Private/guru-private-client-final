@@ -28,7 +28,7 @@ export default function ProfilePage({navigation}) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      Alert.alert('Refreshed');
+      //Alert.alert('Refreshed');
     });
     return unsubscribe;
   }, [navigation]);
@@ -171,11 +171,11 @@ export default function ProfilePage({navigation}) {
             <Text style={styles.title}>{profile.name}</Text>
           </View>
           <View style={{ justifyContent: "center", marginHorizontal: '6%', marginVertical: '5%' }}>
-            <Text style={styles.text}>Your Email</Text>
+            <Text style={styles.text}>Email</Text>
             <Text style={styles.text2}>{profile.email}</Text>
-            <Text style={styles.text}>Your Phone Number</Text>
+            <Text style={styles.text}>Phone Number</Text>
             <Text style={styles.text2}>{profile.telpon_number}</Text>
-            <Text style={styles.text}>Your Adress</Text>
+            <Text style={styles.text}>Address</Text>
             <Text style={styles.text2}>{profile.address}</Text>
           </View>
       </View>

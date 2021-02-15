@@ -44,7 +44,7 @@ export default function LandingPage() {
         <TouchableHighlight
           style={styles.button1}
           onPress={(e) => {
-            navigation.push("Register");
+            navigation.replace("Register");
           }}
         >
           <Text style={styles.text1}>SIGN UP</Text>

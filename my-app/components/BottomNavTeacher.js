@@ -17,13 +17,12 @@ export default function BottomNavTeacher() {
   if(!loaded) return null
 
   return (
-      <Tab.Navigator activeColor={'floralwhite'} inactiveColor={'white'}>
+      <Tab.Navigator>
         <Tab.Screen
-          name="Home"
+          name="HomeTeacher"
           component={HomeTeacherPage}
           options={{
             tabBarLabel: " ",
-            tabBarColor: "#48bcae",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="home" color={color} size={26} />
             ),
@@ -33,8 +32,8 @@ export default function BottomNavTeacher() {
           name="ProfileTeacher"
           component={TeacherProfilePage}
           options={{
-            tabBarColor: '#48bcae',
             tabBarLabel: " ",
+            tabBarColor: '#008bb5',
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="account" color={color} size={26} />
             ),

@@ -38,7 +38,6 @@ export default function EditStudent({ route }) {
   });
   const [photo, setPhoto] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
 
-
   //console.log(profile, "<<<< sliderr");
 
   const convertRupiah = (price) => {
@@ -60,6 +59,7 @@ export default function EditStudent({ route }) {
     price: 0,
     background: "",
     position: [],
+    image_url: "https://www.abadikini.com/media/files/2019/09/IMG_20190908_191823-390x220.jpg"
   });
 
   useEffect(() => {
@@ -95,6 +95,7 @@ export default function EditStudent({ route }) {
   };
 
   const getAccessToken = async () => {
+    //alert(JSON.stringify(newProfile))
     try {
       const access = await AsyncStorage.getItem("access_token");
       const id = await AsyncStorage.getItem("id");
@@ -211,7 +212,6 @@ export default function EditStudent({ route }) {
             marginTop: Constants.statusBarHeight,
             right: "4%",
             height: "150%",
-            backgroundColor:'red'
           }}
           onPress={(e) => {
             getAccessToken();
@@ -248,31 +248,31 @@ export default function EditStudent({ route }) {
       
       <View style={{ marginHorizontal: "5%", top: "13%" }}>
        
-        <Text style={styles.text}>Your Name</Text>
+        <Text style={styles.text}>Name</Text>
         <TextInput
           value={newProfile.name}
           onChangeText={(value) => handleChange(value, "name")}
           style={styles.input}
         ></TextInput>
-        <Text style={styles.text}>Your Background</Text>
+        <Text style={styles.text}>Background</Text>
         <TextInput
           value={newProfile.background}
           onChangeText={(value) => handleChange(value, "background")}
           style={styles.input}
         ></TextInput>
-        <Text style={styles.text}>Your Address</Text>
+        <Text style={styles.text}>Address</Text>
         <TextInput
           value={newProfile.address}
           onChangeText={(value) => handleChange(value, "address")}
           style={styles.input}
         ></TextInput>
-        <Text style={styles.text}>Your Phone Number</Text>
+        <Text style={styles.text}>Phone Number</Text>
         <TextInput
           value={newProfile.telpon_number}
           onChangeText={(value) => handleChange(value, "telpon_number")}
           style={styles.input}
         ></TextInput>
-        <Text style={styles.text}>Your Location</Text>
+        <Text style={styles.text}>Location</Text>
          <MapView
           region={currentPositions}
           style={{ width: "100%", height: "30%", marginVertical: '3%' }}
@@ -286,14 +286,14 @@ export default function EditStudent({ route }) {
             onDragEnd={changePositions}
           />
         </MapView>
-        <Text style={styles.text}>Your Price</Text>
+        <Text style={styles.text}>Price</Text>
         <View>
           <Slider
             onSlidingComplete={(value) =>
               handleChange(value * 1000000, "price")
             }
           ></Slider>
-          <Text>Price: {newProfile.price.toFixed()} / 90 hours</Text>
+          <Text>Price: {newProfile.price.toFixed()} / 90 minutes</Text>
           {/* <Text>
           <NumberFormat value={slide.value} displayType={'text'} thousandSeparator={true} prefix={'IDR'} />
           </Text> */}
